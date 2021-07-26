@@ -78,7 +78,7 @@ plot_map <- function(cov_data, plot_title, legend_title){
         title = plot_title
       )
   }
-  single_map(merged_shp, districts_shp_f)
+  return(single_map(merged_shp, districts_shp_f))
 }
 
 ### Sample Code
