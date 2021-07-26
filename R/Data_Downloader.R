@@ -3,4 +3,6 @@ data_downloader <- function(){
   direction <- dirname(rstudioapi::getSourceEditorContext()$path)
   destfile <- paste(direction, "/data.csv", sep="")
   #destfile
-  download.file(url, destfile)}
+  download.file(url, destfile)
+}
+data_downloader()
