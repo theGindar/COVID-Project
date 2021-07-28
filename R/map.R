@@ -32,6 +32,8 @@ plot_map <- function(cov_data, plot_title, legend_title){
   suppressWarnings(gpclibPermit())
 
   districts_shp <- raster::getData("GADM", country = "DEU", level = 2)
+
+
   districts_shp_f <- fortify(districts_shp, region = "CC_2")
 
   # "IdLandkreis should be char"
