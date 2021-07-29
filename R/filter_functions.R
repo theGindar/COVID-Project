@@ -6,15 +6,66 @@ cov_data <- read.csv("R/RKI_COVID19.csv")
 
 # Todesfälle pro Bundesland, pro Altersgruppe
 
-get_deaths <- function(data, age_group_start, age_group_end, federal_state, district_name) {
+get_deaths <- function(data, age_group_start, age_group_end, federal_state, district) {
+  federal_state_names = c("Schleswig-Holstein",
+                          "Hamburg",
+                          "Niedersachsen",
+                          "Bremen",
+                          "Nordrhein-Westfalen",
+                          "Hessen",
+                          "Rheinland-Pfalz",
+                          "Baden-Württemberg",
+                          "Bayern",
+                          "Saarland",
+                          "Berlin",
+                          "Brandenburg",
+                          "Mecklenburg-Vorpommern",
+                          "Sachsen",
+                          "Sachsen-Anhalt",
+                          "Thüringen")
 
+  # check if federal state is consistent
+  if(!is.na(federal_state)) {
+    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+  }
 
+  # check if district is consistent
+  if(!is.na(district)) {
+    stopifnot("invalid district" = grepl("^[A-Za-z\\-äöü[:space:]]+$", district, perl = T) | grepl("^[\\d]{5}$", district, perl = T))
+  }
 
-
-  data %>%
-    group_by(Refdatum, Altersgruppe, Bundesland) %>%
-    summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
-    filter(Altersgruppe == "A60-A79") -> result
+  district_is_id = FALSE
+  if(grepl("^[\\d]{5}$", district, perl = T)) {
+    district_is_id = TRUE
+  } else {
+    # add prefix to district name
+    district = c("LK ", district)
+  }
+  if(is.na(federal_state) & is.na(district)) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Bundesland) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) -> result
+  }
+  if(is.na(district)) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Bundesland) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(Bundesland == federal_state) -> result
+  } else if(district_is_id) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Landkreis) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(IdLandkreis == district)-> result
+  } else {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Landkreis) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(Landkreis == district)-> result
+  }
 
   return(result)
 }
@@ -55,3 +106,9 @@ filter_by_age_group <- function(data, age_group_start, age_group_end) {
     filter(Altersgruppe %in% queried_age_groups) -> result
   return(result)
 }
+
+cov_data %>%
+  distinct(Landkreis)
+
+
+get_deaths(cov_data, age_group_start = "A05", age_group_end = "A59", )
