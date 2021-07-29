@@ -4,9 +4,13 @@ library(stringr)
 
 cov_data <- read.csv("R/RKI_COVID19.csv")
 
-# Todesfälle pro Bundesland, pro Altersgruppe
-
-get_deaths <- function(data, age_group_start, age_group_end, federal_state, district) {
+# returns death cases
+# data: df with covid data
+# age_group_start: the lower bound age group, e. g. "A05"
+# age_group_end: the upper bound age group, e. g. "A59"
+# federal_state: the federal state to filter by
+# district: district to filter by, can be the name or id of the district
+get_deaths <- function(data, age_group_start = "A00", age_group_end = "A80", federal_state, district) {
   federal_state_names = c("Schleswig-Holstein",
                           "Hamburg",
                           "Niedersachsen",
@@ -89,7 +93,8 @@ filter_by_age_group <- function(data, age_group_start, age_group_end) {
                 "A05-A14" = 14,
                 "A15-A34" = 34,
                 "A35-A59" = 59,
-                "A60-A79" = 79)
+                "A60-A79" = 79,
+                "A80+" = 80)
   # check if age_group is consistent
   stopifnot("wrong format for age_group_start" = str_detect(age_group_start, "^A[:digit:]{2}$"))
   stopifnot("wrong format for age_group_end" = str_detect(age_group_end, "^A[:digit:]{2}$"))
