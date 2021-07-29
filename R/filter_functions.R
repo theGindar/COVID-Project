@@ -4,17 +4,72 @@ library(stringr)
 
 cov_data <- read.csv("R/RKI_COVID19.csv")
 
-# Todesfälle pro Bundesland, pro Altersgruppe
+# returns death cases
+# data: df with covid data
+# age_group_start: the lower bound age group, e. g. "A05"
+# age_group_end: the upper bound age group, e. g. "A59"
+# federal_state: the federal state to filter by
+# district: district to filter by, can be the name or id of the district
+get_deaths <- function(data, age_group_start = "A00", age_group_end = "A80", federal_state, district) {
+  federal_state_names = c("Schleswig-Holstein",
+                          "Hamburg",
+                          "Niedersachsen",
+                          "Bremen",
+                          "Nordrhein-Westfalen",
+                          "Hessen",
+                          "Rheinland-Pfalz",
+                          "Baden-Württemberg",
+                          "Bayern",
+                          "Saarland",
+                          "Berlin",
+                          "Brandenburg",
+                          "Mecklenburg-Vorpommern",
+                          "Sachsen",
+                          "Sachsen-Anhalt",
+                          "Thüringen")
 
-get_deaths <- function(data, age_group_start, age_group_end, federal_state, district_name) {
+  # check if federal state is consistent
+  if(!is.na(federal_state)) {
+    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+  }
 
+  # check if district is consistent
+  if(!is.na(district)) {
+    stopifnot("invalid district" = grepl("^[A-Za-z\\-äöü[:space:]]+$", district, perl = T) | grepl("^[\\d]{5}$", district, perl = T))
+  }
 
-
-
-  data %>%
-    group_by(Refdatum, Altersgruppe, Bundesland) %>%
-    summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
-    filter(Altersgruppe == "A60-A79") -> result
+  district_is_id = FALSE
+  if(grepl("^[\\d]{5}$", district, perl = T)) {
+    district_is_id = TRUE
+  } else {
+    # add prefix to district name
+    district = c("LK ", district)
+  }
+  if(is.na(federal_state) & is.na(district)) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Bundesland) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) -> result
+  }
+  if(is.na(district)) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Bundesland) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(Bundesland == federal_state) -> result
+  } else if(district_is_id) {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Landkreis) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(IdLandkreis == district)-> result
+  } else {
+    data %>%
+      group_by(Refdatum, Altersgruppe, Landkreis) %>%
+      summarize(Todesfaelle = sum(AnzahlTodesfall)) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      filter(Landkreis == district)-> result
+  }
 
   return(result)
 }
@@ -38,7 +93,8 @@ filter_by_age_group <- function(data, age_group_start, age_group_end) {
                 "A05-A14" = 14,
                 "A15-A34" = 34,
                 "A35-A59" = 59,
-                "A60-A79" = 79)
+                "A60-A79" = 79,
+                "A80+" = 80)
   # check if age_group is consistent
   stopifnot("wrong format for age_group_start" = str_detect(age_group_start, "^A[:digit:]{2}$"))
   stopifnot("wrong format for age_group_end" = str_detect(age_group_end, "^A[:digit:]{2}$"))
@@ -55,3 +111,9 @@ filter_by_age_group <- function(data, age_group_start, age_group_end) {
     filter(Altersgruppe %in% queried_age_groups) -> result
   return(result)
 }
+
+cov_data %>%
+  distinct(Landkreis)
+
+
+get_deaths(cov_data, age_group_start = "A05", age_group_end = "A59", )
