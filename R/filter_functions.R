@@ -149,27 +149,8 @@ age_group_start = "A05", age_group_end = "A80",
 
 
 get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
-  district_names = c("Schleswig-Holstein",
-                          "Hamburg",
-                          "Niedersachsen",
-                          "Bremen",
-                          "Nordrhein-Westfalen",
-                          "Hessen",
-                          "Rheinland-Pfalz",
-                          "Baden-Württemberg",
-                          "Bayern",
-                          "Saarland",
-                          "Berlin",
-                          "Brandenburg",
-                          "Mecklenburg-Vorpommern",
-                          "Sachsen",
-                          "Sachsen-Anhalt",
-                          "Thüringen")  
-  
   # check if district state is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = district %in% district_names)
-  }
+
   if(is.na(district)) {
     print("is.na(district")
     data %>%
@@ -311,23 +292,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
 
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
-  district_names = c("Schleswig-Holstein",
-                     "Hamburg",
-                     "Niedersachsen",
-                     "Bremen",
-                     "Nordrhein-Westfalen",
-                     "Hessen",
-                     "Rheinland-Pfalz",
-                     "Baden-Württemberg",
-                     "Bayern",
-                     "Saarland",
-                     "Berlin",
-                     "Brandenburg",
-                     "Mecklenburg-Vorpommern",
-                     "Sachsen",
-                     "Sachsen-Anhalt",
-                     "Thüringen")  
-  
+
   # check if district state is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = district %in% district_names)
@@ -473,22 +438,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
-  district_names = c("Schleswig-Holstein",
-                     "Hamburg",
-                     "Niedersachsen",
-                     "Bremen",
-                     "Nordrhein-Westfalen",
-                     "Hessen",
-                     "Rheinland-Pfalz",
-                     "Baden-Württemberg",
-                     "Bayern",
-                     "Saarland",
-                     "Berlin",
-                     "Brandenburg",
-                     "Mecklenburg-Vorpommern",
-                     "Sachsen",
-                     "Sachsen-Anhalt",
-                     "Thüringen")  
+
   
   # check if district state is consistent
   if(!is.na(district)){
