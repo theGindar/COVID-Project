@@ -509,28 +509,29 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
   return(result) 
 }
 
-# delete -1 files
 
-get_unclean_data <- function(data){
-  data %>% 
-    filter(NeuerFall == -1) %>% 
-    filter(NeuerTodesfall == -1) %>% 
-    filter(NeuGenesen == -1) -> unclean_data
+
+get_unclean_data <- function(){
+  unclean_NeuerFall <- cov_data %>% 
+    filter(NeuerFall == -1)
+  unclean_NeuerTodesfall <- cov_data %>% 
+    filter(NeuerTodesfall == -1)
+  unclean_NeuGenesen <- cov_data %>% 
+    filter(NeuGenesen == -1)
+  unclean_data <- rbind(unclean_NeuerFall,unclean_NeuerTodesfall,unclean_NeuGenesen) 
+  return(unclean_data)
 }
 
-get_unclean_data(data)
+remove_unclean_data <- function(){
+  xx <- cov_data$NeuerFall == -1
+  yy <- cov_data$NeuerTodesfall == -1 
+  zz <- cov_data$NeuGenesen == -1 
+  tt <- xx + yy + zz
+  row_to_keep = !tt
+  cov_data <- cov_data[row_to_keep,]
+}
 
-
-
-
-
-
-
-
-
-
-
-
+  
 
 
 
