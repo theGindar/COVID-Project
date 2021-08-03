@@ -1,4 +1,6 @@
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
 data <- read.csv("RKI_COVID19.csv")
 data
 
@@ -12,6 +14,10 @@ data %>%
 data %>%
   count(Meldedatum) %>%
   ggplot(aes(Meldedatum, n, color = "S-H", group = 1, )) + geom_line()
+
+
+data %>%
+  count(Meldedatum)
 # Anzahl an Meldungen pro Tag
 
 data %>%
