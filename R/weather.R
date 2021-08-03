@@ -91,10 +91,6 @@ download_weather_data <- function() {
 
 }
 
-download_weather_data()
-
-cov_data <- read.csv("R/RKI_COVID19.csv")
-
 add_weather_data <- function(cov_data) {
   data("metaIndex")
   metaInd <- metaIndex
@@ -112,4 +108,9 @@ add_weather_data <- function(cov_data) {
   df_all$LandkreisId <- lk$RS
   df_weather_data <- read.csv("R/weather_data/weather_data_df.csv")
   cov_data <- left_join(cov_data, df_weather_data, by = c("Refdatum" = "Refdatum", "IdLandkreis" = "LandkreisId"))
+  return(cov_data)
 }
+
+cov_data <- read.csv("R/RKI_COVID19.csv")
+download_weather_data()
+cov_data_with_weather <- add_weather_data(cov_data)
