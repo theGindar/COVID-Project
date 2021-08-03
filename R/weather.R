@@ -31,6 +31,7 @@ download_weather_data <- function() {
   df_all$LandkreisId <- lk$RS
 
   # print progress bar
+  print("Downloading weather data from DWD")
   pb = txtProgressBar(min = 0, max = length(df_all$LandkreisId), initial = 0)
   df_weather_data_all = data.frame()
   for(ind in seq_along(df_all$LandkreisId)) {
@@ -106,11 +107,15 @@ add_weather_data <- function(cov_data) {
   df_all %>%
     mutate(station_id = metaInd[station_id, "Stations_id"]) -> df_all
   df_all$LandkreisId <- lk$RS
+
+  # download weather data, if it does not exist
+  if(!file.exists("R/weather_data/weather_data_df.csv")) download_weather_data()
+
   df_weather_data <- read.csv("R/weather_data/weather_data_df.csv")
   cov_data <- left_join(cov_data, df_weather_data, by = c("Refdatum" = "Refdatum", "IdLandkreis" = "LandkreisId"))
   return(cov_data)
 }
 
-cov_data <- read.csv("R/RKI_COVID19.csv")
-download_weather_data()
-cov_data_with_weather <- add_weather_data(cov_data)
+#cov_data <- read.csv("R/RKI_COVID19.csv")
+#download_weather_data()
+#cov_data_with_weather <- add_weather_data(cov_data)
