@@ -97,7 +97,6 @@ add_weather_data <- function(cov_data) {
   metaInd <- metaIndex
   metaInd <- metaInd[metaInd$res=="subdaily" & metaInd$var=="air_temperature" & metaInd$per=="recent" & metaInd$hasfile, ]
   msf <- sf::st_as_sf(metaInd, coords=c("geoLaenge", "geoBreite"), crs=4326)
-  federal_states_shp <- raster::getData("GADM", country = "DEU", level = 1)
   lk <- sf::st_read("R/vg2500_geo84/vg2500_krs.shp", quiet=TRUE)
   int <- sf::st_intersects(lk, msf)
   # get station_ids for each district
