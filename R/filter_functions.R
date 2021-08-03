@@ -10,6 +10,36 @@ cov_data <- read.csv("R/RKI_COVID19.csv")
 # age_group_end: the upper bound age group, e. g. "A59"
 # federal_state: the federal state to filter by
 # district: district to filter by, can be the name or id of the district
+get_deaths_per_federal_states <- function(data, age_group_start = "A00", age_group_end = "A80", federal_state, date_start, date_end) {
+  federal_state_names = c("Schleswig-Holstein",
+                          "Hamburg",
+                          "Niedersachsen",
+                          "Bremen",
+                          "Nordrhein-Westfalen",
+                          "Hessen",
+                          "Rheinland-Pfalz",
+                          "Baden-Württemberg",
+                          "Bayern",
+                          "Saarland",
+                          "Berlin",
+                          "Brandenburg",
+                          "Mecklenburg-Vorpommern",
+                          "Sachsen",
+                          "Sachsen-Anhalt",
+                          "Thüringen")  
+
+  # check if federal state is consistent
+  if(!is.na(federal_state)){
+    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+  }
+  
+  data %>%
+    group_by(Refdatum, Altersgruppe, Bundesland) %>%
+    summarize(Todesfälle = sum(AnzahlTodesfall)) %>%
+    filter_by_age_group(age_group_start, age_group_end) %>%
+    filter(Bundesland = federal_state) -> result
+    
+}
 get_deaths <- function(data, age_group_start = "A00", age_group_end = "A80", federal_state, district) {
   federal_state_names = c("Schleswig-Holstein",
                           "Hamburg",
