@@ -143,9 +143,8 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
   district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
   district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
   district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
-  
+  district_names <- distinct(cov_data, Landkreis)
   if(!is.na(district)) {
-    district_names <- distinct(cov_data, Landkreis)
     stopifnot("not a correct district" = any(district[[1]] %in% district_names))
   }
   
@@ -289,6 +288,13 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
 }
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
+  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
+  district_names <- distinct(cov_data, Landkreis)
+  if(!is.na(district)) {
+    stopifnot("not a correct district" = any(district[[1]] %in% district_names))
+  }
 
   # check if district state is consistent
   if(!is.na(district)){
@@ -434,7 +440,13 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
-  
+  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
+  district_names <- distinct(cov_data, Landkreis)
+  if(!is.na(district)) {
+    stopifnot("not a correct district" = any(district[[1]] %in% district_names))
+  }
   # check if district state is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = district %in% district_names)
