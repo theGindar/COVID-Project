@@ -15,7 +15,6 @@ library(sf)
 
 
 download_weather_data <- function() {
-
   data("metaIndex")
   metaInd <- metaIndex
   metaInd <- metaInd[metaInd$res=="subdaily" & metaInd$var=="air_temperature" & metaInd$per=="recent" & metaInd$hasfile, ]
@@ -33,7 +32,7 @@ download_weather_data <- function() {
 
   # print progress bar
   pb = txtProgressBar(min = 0, max = length(df_all$LandkreisId), initial = 0)
-
+  df_weather_data_all = data.frame()
   for(ind in seq_along(df_all$LandkreisId)) {
 
     setTxtProgressBar(pb,ind)
@@ -83,24 +82,16 @@ download_weather_data <- function() {
     df_weather_data$LandkreisId <- lk_id
     df_weather_data %>%
       select(Refdatum = date, LandkreisId, Temperatur = TT_TER) -> df_weather_data
-    cov_data <- left_join(cov_data, df_weather_data, by = c("Refdatum" = "Refdatum", "IdLandkreis" = "LandkreisId"))
 
-    # make sure the temperatures are in one column
-    if("Temperatur.x" %in% colnames(cov_data)) {
-      if(is.list(cov_data$Temperatur.x)) {
-        cov_data$Temperatur.x <- as.numeric(unlist(cov_data$Temperatur.x))
-      }
-      cov_data %>%
-        mutate(Temperatur = transmute(cov_data,Temperatur=coalesce(as.double(Temperatur.x), as.double(Temperatur.y)))) %>%
-        select(-Temperatur.x, -Temperatur.y) -> cov_data
-    }
+    df_weather_data_all <- rbind(df_weather_data_all, df_weather_data)
   }
 
-
-
+  # save data
+  write.csv(df_weather_data_all, "R/weather_data/weather_data_df.csv", row.names = FALSE)
 
 }
 
+download_weather_data()
 
 cov_data <- read.csv("R/RKI_COVID19.csv")
 
