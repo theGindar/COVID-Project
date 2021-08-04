@@ -535,11 +535,6 @@ remove_unclean_data <- function(cov_data){
   cov_data <- cov_data[row_to_keep,]
 }
 
-# ------ Inzidenz
-
-
-
-cov_data <- read.csv("R/RKI_COVID19.csv")
 
 get_incidence_per_district <- function(data, incidence_days = 7) {
   # from infections function
