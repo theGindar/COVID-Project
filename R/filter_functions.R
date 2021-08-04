@@ -598,3 +598,18 @@ get_incidence_per_district <- function(data, incidence_days = 7) {
 }
 
 
+# ---- incidence corelations
+?cor
+lk_ids
+df_cor <- get_incidence_per_district(cov_data, 7)
+df_cor %>%
+  filter(IdLandkreis == 1001) -> df_cor_1
+
+df_cor %>%
+  filter(IdLandkreis == 1002) -> df_cor_2
+
+# make sure both districts got the same time span
+
+cor(df_cor_1$IdLandkreis, df_cor_2$IdLandkreis)
+length(df_cor_1$IdLandkreis)
+length(df_cor_2$IdLandkreis)
