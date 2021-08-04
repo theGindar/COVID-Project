@@ -531,85 +531,24 @@ remove_unclean_data <- function(cov_data){
   cov_data <- cov_data[row_to_keep,]
 }
 
+# ------ Inzidenz
 
-get_incidence_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
-
-  district <- gsub(pattern = "[??]",replacement = "ö", district)
-  district <- gsub(pattern = "[??]",replacement = "ä", district)
-  district <- gsub(pattern = "[??]",replacement = "ü", district)
-  district_names <- distinct(cov_data, Landkreis)
-  if(!is.na(district)) {
-    stopifnot("not a correct district" = any(district[[1]] == district_names))
-  }
-  # check if district state is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = district %in% district_names)
-  }
-  if(is.na(district)) {
-    print("is.na(district")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) %>%
-      filter_by_age_group(age_group_start, age_group_end) -> result
-    #filter_by_date(date_start, date_end) -> result
-  } else if (is.na(age_group_start) & is.na(age_group_end)){
-    print("is.na(age_group_start) & is.na(age_group_end)")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) %>%
-      filter(district %in% district_names) -> result
-    #filter_by_date(date_start, date_end) -> result
-  } else if (is.na(date_start) & is.na(date_end)) {
-    print("is.na(date_start) & is.na(date_end))")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) %>%
-      filter_by_age_group(age_group_start, age_group_end) %>%
-      filter(district %in% district_names) -> result
-  }else if (is.na(age_group_start) & is.na(age_group_end) & is.na(district)){
-    print("((is.na(age_group_start) & is.na(age_group_end) & is.na(district))")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      #filter_by_date(date_start, date_end)  %>%
-      summarize(Recovered = sum(AnzahlGenesen)) -> result
-  }else if (is.na(age_group_start) & is.na(age_group_end) & is.na(district) & is.na(date_start) & is.na(date_end)){
-    print("((is.na(age_group_start) & is.na(age_group_end) & is.na(district))is.na(date_start) & is.na(date_end)")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) -> result
-  }else if (is.na(district) & is.na(date_start) & is.na(date_end)){
-    print("( is.na(district))is.na(date_start) & is.na(date_end)")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      filter_by_age_group(age_group_start, age_group_end) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) -> result
-  }else {
-    print("else")
-    data %>%
-      filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(district, Altersgruppe) %>%
-      summarize(Recovered = sum(AnzahlGenesen)) %>%
-      filter_by_age_group(age_group_start, age_group_end) %>%
-      filter(district %in% district_names) -> result
-
-
-  }
-  return(result)
-}
 
 
 cov_data <- read.csv("R/RKI_COVID19.csv")
-distinct(cov_data, Landkreis)
-"LK Heidenheim" %in% district_names
-get_infections_per_district(cov_data, district="LK Heidenheim")
-any(district_names == "LK Heidenheim")
 
-district_names
+# from infections function
+cov_data %>%
+  filter(NeuerFall %in% c(0,1)) %>%
+  group_by(Refdatum, IdLandkreis, Landkreis, Altersgruppe) %>%
+  summarize(Infections = sum(AnzahlFall)) -> infect_data
+
+# don't care about age groups
+infect_data %>%
+  group_by(Refdatum, IdLandkreis, Landkreis) %>%
+  summarize(Infections = sum(Infections)) -> infect_data
 
 
+
+infect_data
+cov_data
