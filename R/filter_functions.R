@@ -445,12 +445,12 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
   district <- gsub(pattern = "[??]",replacement = "ü", district)
   district_names <- distinct(cov_data, Landkreis)
   if(!is.na(district)) {
-    stopifnot("not a correct district" = any(district[[1]] %in% district_names))
+    stopifnot("not a correct district" = any(district[[1]] == district_names))
   }
   # check if district state is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = district %in% district_names)
-  }
+  #if(!is.na(district)){
+  #  stopifnot("district does not exist" = district %in% district_names)
+  #}
   if(is.na(district)) {
     print("is.na(district")
     data %>%
