@@ -537,6 +537,15 @@ remove_unclean_data <- function(cov_data){
 
 
 get_incidence_per_district <- function(data, incidence_days = 7) {
+  #
+  #
+  #
+  # TODO: get_infections benutzen und parameter erweitern
+  #
+  #
+  #
+
+
   # from infections function
   data %>%
     filter(NeuerFall %in% c(0,1)) %>%
