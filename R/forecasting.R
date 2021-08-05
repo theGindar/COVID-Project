@@ -10,13 +10,13 @@ source("R/filter_functions.R")
 cov_data <- read.csv("R/RKI_COVID19.csv")
 cov_data %>%
   arrange(desc(Meldedatum))
-data_df <- get_infections_per_federal_states(cov_data, federal_state = "Bayern", date_start = "2019/01/01 00:00:00+00", date_end = "2021/06/01 00:00:00+00")
+data_df <- get_deaths_per_federal_states(cov_data, federal_state = "Bayern", date_start = "2019/01/01 00:00:00+00", date_end = "2021/06/01 00:00:00+00")
 ggplot(data=data_df, aes(x=Meldedatum, y=Deaths, group=1)) +
   geom_line()
 
 data_df %>%
   ungroup() %>%
-  select(date = Meldedatum, value = Infections) %>%
+  select(date = Meldedatum, value = Deaths) %>%
   mutate(date = gsub('.{12}$', '', date)) %>%
   mutate(date = ymd(date)) -> data_df
 
@@ -35,7 +35,7 @@ data_df
 #data_df$y <- BoxCox(data_df$value, lam)
 
 prophet_model <- prophet(data_df, yearly.seasonality = TRUE)
-future <- make_future_dataframe(prophet_model, periods = 365)
+future <- make_future_dataframe(prophet_model, periods = 730)
 forecast <- predict(prophet_model, future)
 plot(prophet_model, forecast)
 forecast
