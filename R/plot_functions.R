@@ -36,5 +36,3 @@ plot_incidence_correlations_matrix <- function(correlations_data, districts = NA
     geom_tile()
 }
 
-plot_incidence_correlations_matrix(incidence_correlation_pairs, districts = c("SK Bochum", "SK Dortmund", "LK Esslingen"))
-
