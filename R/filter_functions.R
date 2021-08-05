@@ -101,6 +101,7 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Age-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Datum")
     data %>%
@@ -109,13 +110,15 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter(Bundesland %in% federal_state)  %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Bundesland-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Bundesland")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Bundesland, Altersgruppe) %>%
+      group_by(Bundesland) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) %>%
       filter(Bundesland %in% federal_state) -> result
+    attr(result, "flag") <- "f_deaths_Bundesland"
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Bundesland Age")
     data %>%
@@ -124,13 +127,15 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Bundesland %in% federal_state) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Bundesland-Age"
   }else if(is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Bundesland, Meldedatum) %>%
+      group_by(Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Datum"
   }else if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -138,8 +143,10 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       group_by(Bundesland, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Age"
   }else {
     print("Bundesland Age Datum")
+    flag <- "f_deaths7"
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
       group_by(Bundesland, Altersgruppe, Meldedatum) %>%
@@ -147,6 +154,7 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter(Bundesland %in% federal_state) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "f_deaths_Bundesland-Age-Datum"
 
 
   }
@@ -159,9 +167,9 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
   district <- gsub(pattern = "[??]",replacement = "ä", district)
   district <- gsub(pattern = "[??]",replacement = "ü", district)
   # check if district is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = Landkreis %in% district)
-  }
+  #if(!is.na(district)){
+  #  stopifnot("district does not exist" = Landkreis %in% district)
+  #}
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -170,6 +178,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Age-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Datum")
     data %>%
@@ -178,6 +187,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Landkreis-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Landkreis")
     data %>%
@@ -185,6 +195,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       group_by(Landkreis, Altersgruppe) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) %>%
       filter(Landkreis %in% district) -> result
+    attr(result, "flag") <- "d_deaths_Landkreis"
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Landkreis Age")
     data %>%
@@ -193,6 +204,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Landkreis-Age"
   }else if(is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
@@ -200,6 +212,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       group_by(Landkreis, Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Datum"
   }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -207,6 +220,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       group_by(Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Age"
   }else {
     print("Landkreis Age Datum")
     data %>%
@@ -216,6 +230,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
+    attr(result, "flag") <- "d_deaths_Landkreis-Age-Datum"
 
 
   }
@@ -255,6 +270,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Age-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Datum")
     data %>%
@@ -263,6 +279,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       filter(Bundesland %in% federal_state)  %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Bundesland-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Bundesland")
     data %>%
@@ -270,6 +287,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       group_by(Bundesland, Altersgruppe) %>%
       summarize(Infections = sum(AnzahlFall)) %>%
       filter(Bundesland %in% federal_state) -> result
+    attr(result, "flag") <- "f_inf_Bundesland"
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Bundesland Age")
     data %>%
@@ -278,6 +296,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Bundesland %in% federal_state) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Bundesland-Age"
   }else if(is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
@@ -285,6 +304,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       group_by(Bundesland, Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Datum"
   }else if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -292,6 +312,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       group_by(Bundesland, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Age"
   }else {
     print("Bundesland Age Datum")
     data %>%
@@ -301,6 +322,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       filter(Bundesland %in% federal_state) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "f_inf_Bundesland-Age-Datum"
 
 
   }
@@ -313,9 +335,9 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
   district <- gsub(pattern = "[??]",replacement = "ä", district)
   district <- gsub(pattern = "[??]",replacement = "ü", district)
   # check if district is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = Landkreis %in% district)
-  }
+  #if(!is.na(district)){
+  #  stopifnot("district does not exist" = Landkreis %in% district)
+  #}
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -324,6 +346,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Age-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Datum")
     data %>%
@@ -332,6 +355,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Landkreis-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Landkreis")
     data %>%
@@ -339,6 +363,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       group_by(Landkreis, Altersgruppe) %>%
       summarize(Infections = sum(AnzahlFall)) %>%
       filter(Landkreis %in% district) -> result
+    attr(result, "flag") <- "d_inf_Landkreis"
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Landkreis Age")
     data %>%
@@ -347,6 +372,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Landkreis-Age"
   }else if(is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
@@ -354,6 +380,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       group_by(Landkreis, Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Datum"
   }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -361,6 +388,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       group_by(Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Age"
   }else {
     print("Landkreis Age Datum")
     data %>%
@@ -370,6 +398,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
+    attr(result, "flag") <- "d_inf_Landkreis-Age-Datum"
 
 
   }
@@ -393,6 +422,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
                           "Sachsen",
                           "Sachsen-Anhalt",
                           "Thüringen")
+
   federal_state <- gsub(pattern = "[??]",replacement = "ö", federal_state)
   federal_state <- gsub(pattern = "[??]",replacement = "ä", federal_state)
   federal_state <- gsub(pattern = "[??]",replacement = "ü", federal_state)
@@ -409,6 +439,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Age-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Datum")
     data %>%
@@ -417,6 +448,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       filter(Bundesland %in% federal_state)  %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Bundesland-Datum"
   } else if(!is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Bundesland")
     data %>%
@@ -424,6 +456,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       group_by(Bundesland, Altersgruppe) %>%
       summarize(Recovered = sum(AnzahlGenesen)) %>%
       filter(Bundesland %in% federal_state) -> result
+    attr(result, "flag") <- "f_rec_Bundesland"
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Bundesland Age")
     data %>%
@@ -432,6 +465,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Bundesland %in% federal_state) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Bundesland-Age"
   }else if(is.na(federal_state) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
@@ -439,6 +473,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       group_by(Bundesland, Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Datum"
   }else if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -446,6 +481,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       group_by(Bundesland, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Age"
   }else {
     print("Bundesland Age Datum")
     data %>%
@@ -455,6 +491,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       filter(Bundesland %in% federal_state) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "f_rec_Bundesland-Age-Datum"
 
 
   }
@@ -462,14 +499,15 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 }
 
 get_recovered_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
-
+  
   district <- gsub(pattern = "[??]",replacement = "ö", district)
   district <- gsub(pattern = "[??]",replacement = "ä", district)
   district <- gsub(pattern = "[??]",replacement = "ü", district)
   # check if district is consistent
-  if(!is.na(district)){
-    stopifnot("district does not exist" = Landkreis %in% district)
-  }
+  #if(!is.na(district)){
+  #  print(district)
+  #  stopifnot("district does not exist" = data$Landkreis %in% district)
+  #}
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -478,6 +516,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter_by_date(date_start, date_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Age-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Datum")
     data %>%
@@ -486,13 +525,15 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Landkreis-Datum"
   } else if(!is.na(district) & is.na(age_group_start) & is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Landkreis")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe) %>%
+      group_by(Landkreis) %>%
       summarize(Recovered = sum(AnzahlGenesen)) %>%
       filter(Landkreis %in% district) -> result
+    attr(result, "flag") <- "d_rec_Landkreis"
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Landkreis Age")
     data %>%
@@ -501,6 +542,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Landkreis-Age"
   }else if(is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
@@ -508,6 +550,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       group_by(Landkreis, Meldedatum) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Datum"
   }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age")
     data %>%
@@ -515,6 +558,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       group_by(Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Age"
   }else {
     print("Landkreis Age Datum")
     data %>%
@@ -524,12 +568,269 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
+    attr(result, "flag") <- "d_rec_Landkreis-Age-Datum"
 
 
   }
   return(result)
 }
 
+plot_function <- function(data){
+  switch(attr(data, "flag"), 
+         "f_deaths_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_deaths_Bundesland-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_deaths_Bundesland" = data %>% 
+           ggplot(aes(x = Bundesland, y = Deaths, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
+         "f_deaths_Bundesland-Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
+         "f_deaths_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_deaths_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
+         "f_deaths_Bundesland-Age-Datum" = "Datum Alter Bundesland",
+         
+         "d_deaths_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_deaths_Landkreis-Datum" = %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_deaths_Landkreis" = data %>% 
+           ggplot(aes(x = Landkreis, y = Deaths, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
+         "d_deaths_Landkreis-Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
+         "d_deaths_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_deaths_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
+         "d_deaths_Landkreis-Age-Datum" = "Datum Alter Landkreis",
+         
+         "f_inf_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_inf_Bundesland-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_inf_Bundesland" = data %>% 
+           ggplot(aes(x = Bundesland, y = Infections, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
+         "f_inf_Bundesland-Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
+         "f_inf_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Infections)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_inf_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
+         "f_inf_Bundesland-Age-Datum" = "Datum Alter Bundesland",
+         
+         "d_inf_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_inf_Landkreis-Datum" = %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_inf_Landkreis" = data %>% 
+           ggplot(aes(x = Landkreis, y = Infections, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
+         "d_inf_Landkreis-Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
+         "d_inf_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Infections)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_inf_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
+         "d_inf_Landkreis-Age-Datum" = "Datum Alter Landkreis",
+         
+         "f_rec_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_rec_Bundesland-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_rec_Bundesland" = data %>% 
+           ggplot(aes(x = Bundesland, y = Recovered, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
+         "f_rec_Bundesland-Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
+         "f_rec_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Recovered)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "f_rec_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) + 
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
+         "f_rec_Bundesland-Age-Datum" = "Datum Alter Bundesland",
+         
+         "d_rec_Age-Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_rec_Landkreis-Datum" = %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_rec_Landkreis-Age" = data %>% 
+           ggplot(aes(x = Landkreis, y = Recovered, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
+         "d_rec_Datum" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
+         "d_rec_Datum" = data %>% 
+           ggplot(aes(x = as.Date(Meldedatum), y = Recovered)) +
+           xlab("Meldedatum") +
+           geom_line() + 
+           stat_smooth(method = "loess", se = FALSE),
+         "d_rec_Age" = data %>% 
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) + 
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
+         "d_rec_Landkreis-Age-Datum" = "Datum Alter Landkreis")
+}
+
+
+
+
+
+
+plot_attempt_01 <- get_deaths_per_district(cov_data, age_group_start = "A15", age_group_end = "A79")
+plot_attempt_01
+
+
+
+
+
+
+p1
+data %>% 
+  ggplot(aes(x = Landkreis, y = Recovered, color = Landkreis))
+
+
+
+plot_function2 <- function(data){
+  if("Landkreis" %in% colnames(data)){
+    print("Landkreis")
+    if(length(p1$Recovered) != 0) & length(p1$Altersgruppe) != 0)){
+      print("Altersgruppen von Recovered pro Landkreis")
+      data %>% 
+        ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) + 
+        geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+        geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5)
+    }else if (length(p1$Recovered) != 0), length(p1$Altersgruppe) == 0)){
+      print("Recovered pro Landkreis")
+      data %>% 
+        ggplot(aes(x = Landkreis, y = Recovered, color = Landkreis)) + 
+        geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+        geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5)
+    }
+  }
+  else{
+    print("Bundesland")
+    if(!is.na(data$Recovered[1]) & !is.na(data$Altersgruppe[1])){
+      data %>% 
+        ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) + 
+        geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+        geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5)
+    }
+  }
+}
+plot_function2(plot_attempt_01)
+plot_attempt_02 <- get_recovered_per_district(cov_data, age_group_start = "A15", age_group_end = "A79", district = c("SK Flensburg", "LK Oberbergischer Kreis"))
+plot_attempt_02
+data %>% 
+  ggplot(aes(x = Altersgruppe, y = Recovered, color = district)) + geom_bar(stat= "identity", aes(fill = district), position = "dodge") + geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5)
+plot_function2(plot_attempt_02)
+
+
+
+#Datum Plot hier
+plot_agedatum_recovered <- get_recovered_per_district(cov_data, age_group_start = "A15", age_group_end = "A79", date_start = "2020/06/19", date_end = "2021/03/22")
+plot_agedatum_recovered %>% 
+  group_by(Altersgruppe, Recovered)
+Datum_limit <- vector(mode="character", length=length(plot_agedatum_recovered$Meldedatum))
+Limiter <- c(floor(length(plot_agedatum_recovered$Meldedatum)/4), floor(length(plot_agedatum_recovered$Meldedatum)/4)*2, floor(length(plot_agedatum_recovered$Meldedatum)/4)*3, floor(length(plot_agedatum_recovered$Meldedatum)/4)*4)
+Datum_limit[0] <- plot_agedatum_recovered$Meldedatum[1]
+Datum_limit[Limiter] <- plot_agedatum_recovered$Meldedatum[Limiter]
+Datum_limit
+plot_agedatum_recovered$Meldedatum
+plot_agedatum_recovered %>% 
+  ggplot(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
+  xlab("Meldedatum") +
+  geom_line() + 
+  stat_smooth(method = "loess", se = FALSE) 
+
+
+
+plot_agedatum_recovered %>% 
+  ggplot(aes(x = Meldedatum, y = Recovered, color = Altersgruppe)) + 
+  geom_point(stat= "identity", group = 1, )  + 
+  #geom_smooth(method = "loess", se = FALSE, fullrange = TRUE) +
+  #geom_hline(yintercept = mean(plot_agedatum_recovered$Recovered)) +
+  #geom_line(stat = "identity", group = 1) +
+  #stat_smooth(aes(x = Meldedatum, y = Recovered), method = "lm", formula = (y~x))
+  theme(axis.text.x = element_text(size=7, angle=90)) +
+  scale_x_discrete(labels = Datum_limit) 
+
+
+###
 
 
 
