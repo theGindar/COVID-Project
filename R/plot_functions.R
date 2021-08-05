@@ -30,11 +30,31 @@ plot_incidence_correlations_matrix <- function(correlations_data, districts = NA
     correlations_data <- rbind(correlations_data, new_row_df)
   }
 
-  print(correlations_data)
   ggplot(data = correlations_data, aes(x = Landkreis_1, y = Landkreis_2,
                                        fill = Correlation)) +
     geom_tile()
 }
 
-plot_incidence_correlations_matrix(incidence_correlation_pairs, districts = c("SK Bochum", "SK Dortmund", "LK Esslingen"))
 
+plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
+  correlations_data %>%
+    arrange(desc(Correlation)) -> correlations_data
+
+  correlations_data <- head(correlations_data, top)
+
+  correlations_data %>%
+    mutate(namings = paste(Landkreis_1, Landkreis_2, sep = " & ")) -> correlations_data
+
+  ylim_min <- min(correlations_data$Correlation)-0.001
+  if(ylim_min < 0) ylim_min <- 0
+  ylim_max <- max(correlations_data$Correlation)
+  ggplot(correlations_data, aes(x=reorder(namings, -Correlation),
+                                y=Correlation)) +
+    #scale_fill_brewer(palette = "Set1") +
+    theme(axis.text.x = element_text(angle = 70, vjust = 1, hjust=1)) +
+    coord_cartesian(ylim=c(ylim_min,ylim_max)) +
+    ggtitle(paste0("Top ", as.character(top), " Correlation Pairs of District's Incidences")) +
+    xlab("District Pairs") + ylab("Incident Correlation") +
+    geom_bar(stat = "identity", fill="steelblue")
+}
+plot_incidence_correlations_barchart(incidence_correlation_pairs)
