@@ -629,7 +629,7 @@ get_correlation_for_incidence_pairs <- function(incidence_data) {
   pb = txtProgressBar(min = 0, max = num_comparisons, initial = 0, style = 3)
 
   ind <- 1
-  lk_ind <- 2
+  lk_ind <- 1
   for(lk_id_1 in lk_ids) {
     for(lk_id_2 in lk_ids[lk_ind:length(lk_ids)]) {
       setTxtProgressBar(pb,ind)
@@ -646,7 +646,7 @@ get_correlation_for_incidence_pairs <- function(incidence_data) {
           select(IdLandkreis_1 = IdLandkreis.x,
                  Landkreis_1 = Landkreis.x,
                  IdLandkreis_2 = IdLandkreis.y,
-                 Landkreis_2 = IdLandkreis.y) -> new_pair_df
+                 Landkreis_2 = Landkreis.y) -> new_pair_df
         new_pair_df <- new_pair_df[1,]
         new_pair_df$Correlation <- cor(df_both$Inzidenz.x, df_both$Inzidenz.y)
         all_correlations_df <- rbind(all_correlations_df, new_pair_df)
@@ -659,7 +659,7 @@ get_correlation_for_incidence_pairs <- function(incidence_data) {
 }
 # example
 incidences_df <- get_incidence_per_district(cov_data, 7)
-incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incideces_df)
-
+incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
+incidence_correlation_pairs
 
 lk_ids[30:length(lk_ids)]
