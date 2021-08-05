@@ -657,11 +657,3 @@ get_correlation_for_incidence_pairs <- function(incidence_data) {
   }
   return(all_correlations_df)
 }
-# example
-incidences_df <- get_incidence_per_district(cov_data, 7)
-incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
-incidence_correlation_pairs
-
-lk_ids[30:length(lk_ids)]
-incidence_correlation_pairs %>%
-  arrange(desc(Correlation))
