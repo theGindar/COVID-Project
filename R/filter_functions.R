@@ -18,6 +18,8 @@ source("R/population.R")
 # outputs the rows of the input df that are between the specified dates
 
 filter_by_date <- function(data, date_start, date_end){
+  stopifnot("wrong format for date_start" = str_detect(date_start, "[:digit:]{4}//[:digit:]{2}//[:digit:]{2}"))
+  stopifnot("wrong format for date_end" = str_detect(date_end, "[:digit:]{4}//[:digit:]{2}//[:digit:]{2}"))
   result <- data[(as.Date(data$Meldedatum)> date_start & as.Date(data$Meldedatum) < date_end),]
   data %>%
     filter(Meldedatum %in% result$Meldedatum) -> result
