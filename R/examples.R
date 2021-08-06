@@ -164,8 +164,29 @@ test13 <- get_deaths_per_district(cov_data,
 test13
 
 
+tt1 <- get_infections_overall(cov_data, date_start = "2021/01/02", date_end = "2021/06/02")
+
+plot_function(tt1)
 
 
 
+### Meldedatum - Refdatum (-werte zu finden -> Unclean data?)
+
+cov_data2
+cov_data2 %>% 
+  filter(IstErkrankungsbeginn == "1") %>% 
+  group_by(Meldedatum) -> result
+attr(result, "flag") <- "f_inf_Datum"
+result$date_diff
+result %>% 
+  ggplot(aes(x = as.Date(Meldedatum), y = date_diff)) +
+  xlab("Meldedatum") +
+  geom_line()
+
+### Meldedatum - Refdatum (-werte zu finden -> Unclean data?)
 
 
+xt1 <- get_fallsterblichkeit_overall(cov_data, age_group_start = "A15", age_group_end = "A80")
+xt1
+xt2 <- get_fallsterblichkeit_overall(cov_data)
+plot_Fallsterblichkeit(xt2)
