@@ -101,7 +101,7 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
-    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+    stopifnot("federal state does not exist" = is.element(federal_state, data$Bundesland))
   }
   if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
@@ -183,9 +183,9 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
   district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
   district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
   # check if district is consistent
-  #if(!is.na(district)){
-  #  stopifnot("district does not exist" = Landkreis %in% district)
-  #}
+  if(!is.na(district)){
+    stopifnot("district does not exist" = is.element(district, data$Landkreis))
+  }
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -282,7 +282,7 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
-    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+    stopifnot("federal state does not exist" = is.element(federal_state, data$Bundesland))
   }
   if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
@@ -363,9 +363,9 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
   district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
   district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
   # check if district is consistent
-  #if(!is.na(district)){
-  #  stopifnot("district does not exist" = Landkreis %in% district)
-  #}
+  if(!is.na(district)){
+    stopifnot("district does not exist" = is.element(district, data$Landkreis))
+  }
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -463,7 +463,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
-    stopifnot("federal state does not exist" = federal_state %in% federal_state_names)
+    stopifnot("federal state does not exist" = is.element(federal_state, data$Bundesland))
   }
   if(is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
@@ -544,10 +544,10 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
   district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
   district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
   # check if district is consistent
-  #if(!is.na(district)){
-  #  print(district)
-  #  stopifnot("district does not exist" = data$Landkreis %in% district)
-  #}
+  if(!is.na(district)){
+    print(district)
+    stopifnot("district does not exist" = is.element(district, data$Landkreis))
+  }
   if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)) {
     print("Age Datum")
     data %>%
@@ -631,6 +631,11 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
 # outputs a dataframe with the specifications that were made
 
 get_infections_overall <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA){
+  
+  if(!is.na(district)){
+    stopifnot("district does not exist" = is.element(district, data$Landkreis))
+  }
+  
   if(is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>% 
@@ -945,6 +950,7 @@ remove_unclean_data <- function(data){
   return(data)
 }
 
+# Patricks Part
 
 get_incidence_per_district <- function(data, incidence_days = 7) {
   #
