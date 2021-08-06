@@ -81,3 +81,91 @@ plot_agedatum_recovered %>%
 
 
 ###
+
+test1 <- get_deaths_per_federal_states(cov_data, 
+                                       age_group_start = "A15", 
+                                       age_group_end = "A59", 
+                                       date_start = "2020/11/19", 
+                                       date_end = "2021/02/19")
+plot_function(test1)
+
+test2 <- get_deaths_per_federal_states(cov_data, 
+                                       federal_state = c("Hessen", "Berlin"), 
+                                       date_start = "2020/11/19", 
+                                       date_end = "2021/02/19")
+plot_function(test2)
+
+test3 <- get_deaths_per_federal_states(cov_data, 
+                                       federal_state = c("Hessen", "Berlin", "Bayern"), 
+)
+plot_function(test3)
+
+test4 <- get_deaths_per_federal_states(cov_data, 
+                                       federal_state = c("Hessen", "Berlin"), 
+                                       age_group_start = "A35",
+                                       age_group_end = "A79"
+)
+plot_function(test4)
+
+test5 <- get_deaths_per_federal_states(cov_data, 
+                                       date_start = "2020/11/19",
+                                       date_end = "2021/02/19"
+)
+plot_function(test5)
+
+test6 <- get_deaths_per_federal_states(cov_data, 
+                                       age_group_start = "A15",
+                                       age_group_end = "A59")
+plot_function(test6)
+
+test7 <- get_deaths_per_federal_states(cov_data, 
+                                       age_group_start = "A15",
+                                       age_group_end = "A59",
+                                       federal_state = c("Bayern", "Berlin"),
+                                       date_start = "2020/11/19",
+                                       date_end = "2021/03/19")
+
+test8 <- get_deaths_per_district(cov_data, 
+                                 age_group_start = "A15", 
+                                 age_group_end = "A59", 
+                                 date_start = "2020/11/19", 
+                                 date_end = "2021/02/19")
+plot_function(test8)
+
+test9 <- get_deaths_per_district(cov_data, 
+                                 district = c("SK Flensburg", "SK Krefeld"), 
+                                 date_start = "2020/11/19", 
+                                 date_end = "2021/02/19")
+plot_function(test9)
+
+test10 <- get_deaths_per_district(cov_data, 
+                                 district = c("SK Flensburg", "SK Krefeld"))
+plot_function(test10)
+
+test11 <- get_deaths_per_district(cov_data, 
+                                  district = c("SK Flensburg", "SK Krefeld","LK Meißen"),
+                                  age_group_start = "A35",
+                                  age_group_end = "A80")
+plot_function(test11)
+
+test12 <- get_deaths_per_district(cov_data, 
+                                 age_group_start = "A15",
+                                 age_group_end = "A59")
+plot_function(test12)
+
+test13 <- get_deaths_per_district(cov_data, 
+                                 age_group_start = "A15",
+                                 age_group_end = "A59",
+                                 district = c("SK Flendsburg", "LK Höxter"),
+                                 date_start = "2020/11/19",
+                                 date_end = "2021/03/19")
+
+
+test13
+
+
+
+
+
+
+
