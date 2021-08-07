@@ -10,7 +10,7 @@ source("R/filter_functions.R")
 cov_data <- read.csv("R/RKI_COVID19.csv")
 cov_data %>%
   arrange(desc(Meldedatum))
-data_df <- get_infections_per_federal_states(cov_data, federal_state = "Bayern", date_start = "2019/01/01 00:00:00+00", date_end = "2021/06/01 00:00:00+00")
+data_df <- get_infections_per_federal_states(cov_data, federal_state = "Bayern", date_start = "2020/01/01 00:00:00+00", date_end = "2021/06/01 00:00:00+00")
 ggplot(data=data_df, aes(x=Meldedatum, y=Deaths, group=1)) +
   geom_line()
 
