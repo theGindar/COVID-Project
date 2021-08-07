@@ -4,7 +4,9 @@ library(dplyr)
 library(stringr)
 library(lubridate)
 library(RcppRoll)
+
 cov_data <- read.csv("data.csv")
+
 source("R/population.R")
 
 # filter by date (Meldedatum)
@@ -31,35 +33,41 @@ filter_by_date <- function(data, date_start, date_end){
 # age_group_end: upper bound of age groups, e. g. "A59"
 #
 # outputs the rows of the input df that are between the specified age groups
+filter_by_age_group <- function(data, age_group_start = NA, age_group_end = NA) {
+  if(is.na(age_group_start) | is.na(age_group_end)) {
+    if(is.na(age_group_start)) age_group_start <- "A00"
+    if(is.na(age_group_end)) age_group_end <- "A80"
 
-filter_by_age_group <- function(data, age_group_start, age_group_end) {
-  start_ages <- c("A00-A04" = 0,
-                  "A05-A14" = 5,
-                  "A15-A34" = 15,
-                  "A35-A59" = 35,
-                  "A60-A79" = 60,
+    start_ages <- c("A00-A04" = 0,
+                    "A05-A14" = 5,
+                    "A15-A34" = 15,
+                    "A35-A59" = 35,
+                    "A60-A79" = 60,
+                    "A80+" = 80)
+    end_ages <- c("A00-A04" = 4 ,
+                  "A05-A14" = 14,
+                  "A15-A34" = 34,
+                  "A35-A59" = 59,
+                  "A60-A79" = 79,
                   "A80+" = 80)
-  end_ages <- c("A00-A04" = 4 ,
-                "A05-A14" = 14,
-                "A15-A34" = 34,
-                "A35-A59" = 59,
-                "A60-A79" = 79,
-                "A80+" = 80)
-  # check if age_group is consistent
-  stopifnot("wrong format for age_group_start" = str_detect(age_group_start, "^A[:digit:]{2}$"))
-  stopifnot("wrong format for age_group_end" = str_detect(age_group_end, "^A[:digit:]{2}$"))
-  stopifnot("age group for age_group_start does not exist" = as.double(substr(age_group_start, 2, 3)) %in% start_ages)
-  stopifnot("age group for age_group_end does not exist" = as.double(substr(age_group_end, 2, 3)) %in% end_ages)
-  stopifnot("age_group_start should be smaller than age_group_end" = as.double(substr(age_group_start, 2, 3)) < as.double(substr(age_group_end, 2, 3)))
+    # check if age_group is consistent
+    stopifnot("wrong format for age_group_start" = str_detect(age_group_start, "^A[:digit:]{2}$"))
+    stopifnot("wrong format for age_group_end" = str_detect(age_group_end, "^A[:digit:]{2}$"))
+    stopifnot("age group for age_group_start does not exist" = as.double(substr(age_group_start, 2, 3)) %in% start_ages)
+    stopifnot("age group for age_group_end does not exist" = as.double(substr(age_group_end, 2, 3)) %in% end_ages)
+    stopifnot("age_group_start should be smaller than age_group_end" = as.double(substr(age_group_start, 2, 3)) < as.double(substr(age_group_end, 2, 3)))
 
-  start_age <- as.double(substr(age_group_start, 2, 3))
-  end_age <- as.double(substr(age_group_end, 2, 3))
+    start_age <- as.double(substr(age_group_start, 2, 3))
+    end_age <- as.double(substr(age_group_end, 2, 3))
 
-  queried_age_groups <- attributes(start_ages[which(start_ages == start_age):which(end_ages == end_age)])$names
+    queried_age_groups <- attributes(start_ages[which(start_ages == start_age):which(end_ages == end_age)])$names
 
-  data %>%
-    filter(Altersgruppe %in% queried_age_groups) -> result
-  return(result)
+    data %>%
+      filter(Altersgruppe %in% queried_age_groups) -> result
+    return(result)
+  } else {
+    return(data)
+  }
 }
 
 
@@ -78,26 +86,10 @@ filter_by_age_group <- function(data, age_group_start, age_group_end) {
 # outputs a dataframe with the specified grouping that was put in
 
 get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
-  federal_state_names = c("Schleswig-Holstein",
-                          "Hamburg",
-                          "Niedersachsen",
-                          "Bremen",
-                          "Nordrhein-Westfalen",
-                          "Hessen",
-                          "Rheinland-Pfalz",
-                          "Baden-WÃ¼rttemberg",
-                          "Bayern",
-                          "Saarland",
-                          "Berlin",
-                          "Brandenburg",
-                          "Mecklenburg-Vorpommern",
-                          "Sachsen",
-                          "Sachsen-Anhalt",
-                          "ThÃ¼ringen")
-  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[äÄ]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -154,6 +146,13 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "f_deaths_Age"
+  }else if(is.na(federal_state) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuerTodesfall %in% c(0,1)) %>%
+      group_by(Bundesland) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Deaths = sum(AnzahlTodesfall)) -> result
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Age Datum")
     data %>%
@@ -171,17 +170,17 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       group_by(Bundesland) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "f_deaths"
-    
   }
+  result <- ungroup(result)
   return(result)
 }
 
 get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA){
 
-  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", district)
   # check if district is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = is.element(district, data$Landkreis))
@@ -237,6 +236,13 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "d_deaths_Age"
+  }else if(is.na(district) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuerTodesfall %in% c(0,1)) %>%
+      group_by(Landkreis) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Deaths = sum(AnzahlTodesfall)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
@@ -255,30 +261,16 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "d_deaths"
   }
+  result <- ungroup(result)
   return(result)
 }
 
 get_infections_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
-  federal_state_names = c("Schleswig-Holstein",
-                          "Hamburg",
-                          "Niedersachsen",
-                          "Bremen",
-                          "Nordrhein-Westfalen",
-                          "Hessen",
-                          "Rheinland-Pfalz",
-                          "Baden-WÃ¼rttemberg",
-                          "Bayern",
-                          "Saarland",
-                          "Berlin",
-                          "Brandenburg",
-                          "Mecklenburg-Vorpommern",
-                          "Sachsen",
-                          "Sachsen-Anhalt",
-                          "ThÃ¼ringen")
-  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[äA]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
+  
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½A]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -335,6 +327,13 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "f_inf_Age"
+  }else if(is.na(federal_state) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuerFall %in% c(0,1)) %>%
+      group_by(Bundesland) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Infections = sum(AnzahlFall)) -> result
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Age Datum")
     data %>%
@@ -353,15 +352,16 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "f_inf"
   }
+  result <- ungroup(result)
   return(result)
 }
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
-  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", district)
   # check if district is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = is.element(district, data$Landkreis))
@@ -417,6 +417,13 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "d_inf_Age"
+  }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuerFall %in% c(0,1)) %>%
+      group_by(Landkreis) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Infections = sum(AnzahlFall)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
@@ -434,32 +441,17 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       group_by(Meldedatum) %>% 
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "d_inf"
-    }
+  }
+  result <- ungroup(result)
   return(result)
 }
 
 get_recovered_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
-  federal_state_names = c("Schleswig-Holstein",
-                          "Hamburg",
-                          "Niedersachsen",
-                          "Bremen",
-                          "Nordrhein-Westfalen",
-                          "Hessen",
-                          "Rheinland-Pfalz",
-                          "Baden-WÃ¼rttemberg",
-                          "Bayern",
-                          "Saarland",
-                          "Berlin",
-                          "Brandenburg",
-                          "Mecklenburg-Vorpommern",
-                          "Sachsen",
-                          "Sachsen-Anhalt",
-                          "ThÃ¼ringen")
 
-  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[äÄ]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -516,6 +508,13 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
     attr(result, "flag") <- "f_rec_Age"
+  }else if(is.na(federal_state) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuGenesen %in% c(0,1)) %>%
+      group_by(Bundesland) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Recovered = sum(AnzahlGenesen)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Age Datum")
     data %>%
@@ -534,15 +533,16 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       summarize(Recovered = sum(AnzahlGenesen)) -> result
     attr(result, "flag") <- "f_rec"
   }
+  result <- ungroup(result)
   return(result)
 }
 
 get_recovered_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
   
-  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[ï¿½ï¿½]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ï¿½]",replacement = "ï¿½Y", district)
   # check if district is consistent
   if(!is.na(district)){
     print(district)
@@ -599,6 +599,13 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
     attr(result, "flag") <- "d_rec_Age"
+  }else if(is.na(district) & is.na(date_start) & is.na(date_end)){
+    print("Age 2")
+    data %>%
+      filter(NeuGenesen %in% c(0,1)) %>%
+      group_by(Landkreis) %>%
+      filter_by_age_group(age_group_start, age_group_end) %>%
+      summarize(Recovered = sum(AnzahlGenesen)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
@@ -651,6 +658,7 @@ get_infections_overall <- function(data, age_group_start = NA, age_group_end = N
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "f_inf_Datum"
   }
+  result <- ungroup(result)
   return(result)
 }
 
@@ -1054,11 +1062,3 @@ get_correlation_for_incidence_pairs <- function(incidence_data) {
   }
   return(all_correlations_df)
 }
-# example
-incidences_df <- get_incidence_per_district(cov_data, 7)
-incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
-incidence_correlation_pairs
-
-lk_ids[30:length(lk_ids)]
-incidence_correlation_pairs %>%
-  arrange(desc(Correlation))

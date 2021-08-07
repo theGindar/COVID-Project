@@ -143,7 +143,7 @@ test10 <- get_deaths_per_district(cov_data,
 plot_function(test10)
 
 test11 <- get_deaths_per_district(cov_data, 
-                                  district = c("SK Flensburg", "SK Krefeld","LK Meißen"),
+                                  district = c("SK Flensburg", "SK Krefeld","LK Meiï¿½en"),
                                   age_group_start = "A35",
                                   age_group_end = "A80")
 plot_function(test11)
@@ -156,7 +156,7 @@ plot_function(test12)
 test13 <- get_deaths_per_district(cov_data, 
                                  age_group_start = "A15",
                                  age_group_end = "A59",
-                                 district = c("SK Flendsburg", "LK Höxter"),
+                                 district = c("SK Flendsburg", "LK Hï¿½xter"),
                                  date_start = "2020/11/19",
                                  date_end = "2021/03/19")
 
@@ -190,3 +190,25 @@ xt1 <- get_fallsterblichkeit_overall(cov_data, age_group_start = "A15", age_grou
 xt1
 xt2 <- get_fallsterblichkeit_overall(cov_data)
 plot_Fallsterblichkeit(xt2)
+
+
+# passt schon 
+
+
+source("R/filter_functions.R")
+source("R/plot_functions.R")
+
+cov_data <- read.csv("data.csv")
+
+# --- plot incidence correlation matrix ---
+incidences_df <- get_incidence_per_district(cov_data, 7)
+incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
+
+plot_incidence_correlations_matrix(incidence_correlation_pairs,
+                                   districts = c("SK Bochum", "SK Dortmund", "LK Esslingen"))
+
+# --- plot incidence correlation barchart ---
+incidences_df <- get_incidence_per_district(cov_data, 7)
+incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
+
+plot_incidence_correlations_barchart(incidence_correlation_pairs)
