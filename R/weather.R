@@ -13,6 +13,7 @@ library(devtools)
 #install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
 library(sf)
 
+source("R/utils.R")
 
 download_weather_data <- function() {
   data("metaIndex")
@@ -82,7 +83,7 @@ download_weather_data <- function() {
 
     df_weather_data$LandkreisId <- lk_id
     df_weather_data %>%
-      select(Refdatum = date, LandkreisId, Temperatur = TT_TER) -> df_weather_data
+      select(Meldedatum = date, LandkreisId, Temperatur = TT_TER) -> df_weather_data
 
     df_weather_data_all <- rbind(df_weather_data_all, df_weather_data)
   }
@@ -93,28 +94,43 @@ download_weather_data <- function() {
 }
 
 add_weather_data <- function(cov_data) {
-  data("metaIndex")
-  metaInd <- metaIndex
-  metaInd <- metaInd[metaInd$res=="subdaily" & metaInd$var=="air_temperature" & metaInd$per=="recent" & metaInd$hasfile, ]
-  msf <- sf::st_as_sf(metaInd, coords=c("geoLaenge", "geoBreite"), crs=4326)
-  lk <- sf::st_read("R/vg2500_geo84/vg2500_krs.shp", quiet=TRUE)
-  int <- sf::st_intersects(lk, msf)
-  # get station_ids for each district
-  df_districts <- data.frame(lk_name=lk$GEN, lk_id=1:402)
-  df_stations <- data.frame(lk_id=1:402, station_id=unlist(lapply(int, function(x) x[1])))
-  df_all <- left_join(df_districts,df_stations, by="lk_id")
-  df_all %>%
-    mutate(station_id = metaInd[station_id, "Stations_id"]) -> df_all
-  df_all$LandkreisId <- lk$RS
+  stopifnot("No 'Meldedatum' column provided" = "Meldedatum" %in% colnames(cov_data))
 
   # download weather data, if it does not exist
   if(!file.exists("R/weather_data/weather_data_df.csv")) download_weather_data()
 
   df_weather_data <- read.csv("R/weather_data/weather_data_df.csv")
-  cov_data <- left_join(cov_data, df_weather_data, by = c("Refdatum" = "Refdatum", "IdLandkreis" = "LandkreisId"))
+  print(df_weather_data)
+
+  # if IdLandkreis exists in data add temperatures
+  if("IdLandkreis" %in% colnames(cov_data)) {
+    cov_data <- left_join(cov_data, df_weather_data, by = c("Meldedatum" = "Meldedatum",
+                                                            "IdLandkreis" = "LandkreisId"))
+  } else if("Bundesland" %in% colnames(cov_data)) {
+    # if only Bundesland is provided
+    federal_states_provided <- distinct(cov_data, Bundesland)$Bundesland
+    df_weather_data %>%
+      drop_na(Temperatur) %>%
+      mutate(Bundesland = get_federal_state_by_district_id(Bundesland)) %>%
+      group_by(Meldedatum, Bundesland) %>%
+      summarise(Temperatur = mean(Temperatur)) -> df_weather_data
+
+    cov_data <- left_join(cov_data, df_weather_data, by = c("Meldedatum" = "Meldedatum",
+                                                            "Bundesland" = "Bundesland"))
+
+  } else {
+    # if nothing is provided use the mean of all measurements to get the mean temperature for germany
+    df_weather_data %>%
+      drop_na(Temperatur) %>%
+      group_by(Meldedatum) %>%
+      summarise(Temperatur = mean(Temperatur)) -> df_weather_data
+    cov_data <- left_join(cov_data, df_weather_data, by = c("Meldedatum" = "Meldedatum"))
+  }
+  cov_data <- ungroup(cov_data)
   return(cov_data)
 }
 
 #cov_data <- read.csv("R/RKI_COVID19.csv")
 #download_weather_data()
 #cov_data_with_weather <- add_weather_data(cov_data)
+

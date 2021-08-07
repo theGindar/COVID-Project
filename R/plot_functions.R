@@ -1,172 +1,290 @@
 library(ggplot2)
 
-plot_function <- function(data){
-  switch(attr(data, "flag"), 
-         "f_deaths_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
+plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
+  if(add_weather){
+    data <- add_weather_data(data)
+  }
+
+  add_weather_line <- function(cov_plot, axis_1) {
+    return(cov_plot +
+             stat_smooth(aes(x = as.Date(Meldedatum), y = data$Temperatur, color=1))+
+             scale_y_continuous(
+
+               # Features of the first axis
+               name = axis_1,
+
+               # Add a second axis and specify its features
+               sec.axis = sec_axis(~.*scaling_coeff, name="Durchschnittl. Temperatur in [°C]")
+             ))
+  }
+
+  switch(attr(data, "flag"),
+         "f_deaths_Age-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_deaths_Bundesland-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Deaths")
+           }
+           cov_plot
+           },
+         "f_deaths_Bundesland-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_deaths_Bundesland" = data %>% 
-           ggplot(aes(x = Bundesland, y = Deaths, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           stat_smooth(method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
+           }
+           cov_plot
+           },
+         "f_deaths_Bundesland" = data %>%
+           ggplot(aes(x = Bundesland, y = Deaths, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
-         "f_deaths_Bundesland-Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+         "f_deaths_Bundesland-Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
-         "f_deaths_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths)) +
+         "f_deaths_Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_deaths_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
+           }
+           cov_plot
+           },
+         "f_deaths_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Bundesland)) +
            geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
          "f_deaths_Bundesland-Age-Datum" = "Datum Alter Bundesland",
-         
-         "d_deaths_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
+
+         "d_deaths_Age-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_deaths_Landkreis-Datum" = %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
+           }
+           cov_plot
+           },
+         "d_deaths_Landkreis-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_deaths_Landkreis" = data %>% 
-           ggplot(aes(x = Landkreis, y = Deaths, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
+           }
+           cov_plot
+           },
+         "d_deaths_Landkreis" = data %>%
+           ggplot(aes(x = Landkreis, y = Deaths, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
-         "d_deaths_Landkreis-Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+         "d_deaths_Landkreis-Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Deaths),vjust = -0.3, color = "black", size = 3.5),
-         "d_deaths_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths)) +
+         "d_deaths_Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_deaths_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
+           }
+           cov_plot
+           },
+         "d_deaths_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Deaths, color = Landkreis)) +
            geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
          "d_deaths_Landkreis-Age-Datum" = "Datum Alter Landkreis",
-         
-         "f_inf_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
+
+         "f_inf_Age-Datum" = {
+           if(add_weather) y_val <- data$Infections / scaling_coeff
+           else y_val <- data$Infections
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_inf_Bundesland-Datum" = data %>% 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+           cov_plot
+           },
+         "f_inf_Bundesland-Datum" = data %>%
            ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
            xlab("Meldedatum") +
-           geom_line() + 
+           geom_line() +
            stat_smooth(method = "loess", se = FALSE),
-         "f_inf_Bundesland" = data %>% 
-           ggplot(aes(x = Bundesland, y = Infections, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+         "f_inf_Bundesland" = data %>%
+           ggplot(aes(x = Bundesland, y = Infections, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
-         "f_inf_Bundesland-Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+         "f_inf_Bundesland-Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
-         "f_inf_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Infections)) +
+         #### hier ###################################################################################################################
+         "f_inf_Datum" = {
+           if(add_weather) y_val <- data$Infections / scaling_coeff
+           else y_val <- data$Infections
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = y_val)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_inf_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) + 
+           stat_smooth(aes(x=as.Date(Meldedatum), y=y_val), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+
+           cov_plot
+           },
+         "f_inf_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) +
            geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
          "f_inf_Bundesland-Age-Datum" = "Datum Alter Bundesland",
-         
-         "d_inf_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
+
+         "d_inf_Age-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_inf_Landkreis-Datum" = %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Infections, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+
+           cov_plot
+           },
+         "d_inf_Landkreis-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_inf_Landkreis" = data %>% 
-           ggplot(aes(x = Landkreis, y = Infections, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+
+           cov_plot
+           },
+         "d_inf_Landkreis" = data %>%
+           ggplot(aes(x = Landkreis, y = Infections, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
-         "d_inf_Landkreis-Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+         "d_inf_Landkreis-Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
-         "d_inf_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Infections)) +
+         "d_inf_Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Infections)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_inf_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Infections), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+
+           cov_plot
+           },
+         "d_inf_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Infections, color = Landkreis)) +
            geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
          "d_inf_Landkreis-Age-Datum" = "Datum Alter Landkreis",
-         
-         "f_rec_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
+
+         "f_rec_Age-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_rec_Bundesland-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
+           }
+
+           cov_plot
+           },
+         "f_rec_Bundesland-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_rec_Bundesland" = data %>% 
-           ggplot(aes(x = Bundesland, y = Recovered, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Bundesland, color = Bundesland), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
+           }
+
+           cov_plot
+           },
+         "f_rec_Bundesland" = data %>%
+           ggplot(aes(x = Bundesland, y = Recovered, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
-         "f_rec_Bundesland-Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) + 
-           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") + 
+         "f_rec_Bundesland-Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) +
+           geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
-         "f_rec_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Recovered)) +
+         "f_rec_Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Recovered)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "f_rec_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Recovered), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
+           }
+
+           cov_plot
+           },
+         "f_rec_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Bundesland)) +
            geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge"),
          "f_rec_Bundesland-Age-Datum" = "Datum Alter Bundesland",
-         
-         "d_rec_Age-Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
+
+         "d_rec_Age-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_rec_Landkreis-Datum" = %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Recovered, group = Altersgruppe, color = Altersgruppe), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
+           }
+
+           cov_plot
+           },
+         "d_rec_Landkreis-Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_rec_Landkreis-Age" = data %>% 
-           ggplot(aes(x = Landkreis, y = Recovered, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Deaths, group = Landkreis, color = Landkreis), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
+           }
+
+           cov_plot
+           },
+         "d_rec_Landkreis-Age" = data %>%
+           ggplot(aes(x = Landkreis, y = Recovered, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
-         "d_rec_Datum" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) + 
-           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") + 
+         "d_rec_Datum" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) +
+           geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge") +
            geom_text(aes(label = Recovered),vjust = -0.3, color = "black", size = 3.5),
-         "d_rec_Datum" = data %>% 
-           ggplot(aes(x = as.Date(Meldedatum), y = Recovered)) +
+         "d_rec_Datum" = {
+           cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = Recovered)) +
            xlab("Meldedatum") +
-           geom_line() + 
-           stat_smooth(method = "loess", se = FALSE),
-         "d_rec_Age" = data %>% 
-           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) + 
+           stat_smooth(aes(x = as.Date(Meldedatum), y = Recovered), method = "loess", se = FALSE)
+
+           if(add_weather) {
+             cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
+           }
+
+           cov_plot
+           },
+         "d_rec_Age" = data %>%
+           ggplot(aes(x = Altersgruppe, y = Recovered, color = Landkreis)) +
            geom_bar(stat= "identity", aes(fill = Landkreis), position = "dodge"),
          "d_rec_Landkreis-Age-Datum" = "Datum Alter Landkreis")
 }
@@ -228,4 +346,21 @@ plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
     xlab("District Pairs") + ylab("Incident Correlation") +
     geom_bar(stat = "identity", fill="steelblue")
 }
-plot_incidence_correlations_barchart(incidence_correlation_pairs)
+
+
+source("R/filter_functions.R")
+source("R/weather.R")
+cov_data <- read.csv("R/RKI_COVID19.csv")
+dat_1 <- get_infections_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2020/12/01")
+attributes(dat_1)
+dat_2 <- add_weather_data(dat_1)
+dat_1
+plot_function(dat_1, add_weather = TRUE)
+dat_2
+
+write(unique(cov_data$IdLandkreis), file = "R/geo_data/district_ids.txt")
+disids <- scan("R/geo_data/district_ids.txt", integer(), quote = "")
+disids
+
+get_infections_per_district(cov_data, district = "LK Karlsruhe")
+
