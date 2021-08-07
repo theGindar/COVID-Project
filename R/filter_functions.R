@@ -5,7 +5,6 @@ library(stringr)
 library(lubridate)
 library(RcppRoll)
 
-
 cov_data <- read.csv("R/data.csv")
 
 
@@ -490,7 +489,7 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       group_by(Bundesland) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
-  }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
+  }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Age Datum")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
