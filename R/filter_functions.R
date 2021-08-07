@@ -683,19 +683,6 @@ get_fallsterblichkeit_overall <- function(data, age_group_start = NA, age_group_
   }
 }
 
-# plots the plottable dataframe from get_fallsterblichkeit_overall
-#
-# data: a dataframe with mortalityrate for every day
-#
-# output: a plot showing the development of the mortalityrate
-
-plot_Fallsterblichkeit <- function(data){
-  data %>%
-    ggplot(aes(x = as.Date(Meldedatum), y = Fallsterblichkeit)) +
-    xlab("Meldedatum") +
-    geom_bar(stat= "identity", position = "dodge", fill = "steelblue")
-}
-
 # a function to automatically plot your dataframe from any get_x_per_y output
 #
 # data: a df from get_x_per_y
