@@ -10,7 +10,7 @@ data %>%
 # 1: Fall ist nur in der aktuellen Publikation enthalten
 # -1: Fall ist nur in der Publikation des Vortags enthalten
 
-xlabels <- sort(unique(data$Meldedatum))
+xlabels <- sort(unique(cov_data$Meldedatum))
 xlabels[2:100] <- ""
 xlabels[102:200] <- ""
 xlabels[202:300] <- ""
@@ -19,7 +19,7 @@ xlabels[402:500] <- ""
 xlabels[502:538] <- ""
 xlabels
 
-data %>% 
+cov_data %>% 
   group_by(Bundesland) %>% 
   count(Meldedatum) %>% 
   ggplot(aes(Meldedatum, n, color = Bundesland, group = 1, )
