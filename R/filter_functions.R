@@ -5,7 +5,10 @@ library(stringr)
 library(lubridate)
 library(RcppRoll)
 
-#cov_data <- read.csv("data.csv")
+
+cov_data <- read.csv("R/data.csv")
+
+
 
 source("R/population.R")
 
@@ -86,10 +89,6 @@ filter_by_age_group <- function(data, age_group_start = NA, age_group_end = NA) 
 # outputs a dataframe with the specified grouping that was put in
 
 get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
-  federal_state <- gsub(pattern = "[��]",replacement = "ö", federal_state)
-  federal_state <- gsub(pattern = "[��]",replacement = "ä", federal_state)
-  federal_state <- gsub(pattern = "[��]",replacement = "ü", federal_state)
-  federal_state <- gsub(pattern = "[�]",replacement = "�Y", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -146,13 +145,6 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "f_deaths_Age"
-  }else if(is.na(federal_state) & is.na(date_start) & is.na(date_end)){
-    print("Age 2")
-    data %>%
-      filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Bundesland) %>%
-      filter_by_age_group(age_group_start, age_group_end) %>%
-      summarize(Deaths = sum(AnzahlTodesfall)) -> result
   }else if(!is.na(federal_state) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Bundesland Age Datum")
     data %>%
@@ -177,10 +169,6 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
 
 get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA){
 
-  district <- gsub(pattern = "[��]",replacement = "ö", district)
-  district <- gsub(pattern = "[��]",replacement = "ä", district)
-  district <- gsub(pattern = "[��]",replacement = "ü", district)
-  district <- gsub(pattern = "[�]",replacement = "�Y", district)
   # check if district is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = is.element(district, data$Landkreis))
@@ -236,13 +224,6 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "d_deaths_Age"
-  }else if(is.na(district) & is.na(date_start) & is.na(date_end)){
-    print("Age 2")
-    data %>%
-      filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
-      filter_by_age_group(age_group_start, age_group_end) %>%
-      summarize(Deaths = sum(AnzahlTodesfall)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
@@ -267,10 +248,12 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
 
 get_infections_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
 
+
   federal_state <- gsub(pattern = "[��]",replacement = "ö", federal_state)
   federal_state <- gsub(pattern = "[�A]",replacement = "ä", federal_state)
   federal_state <- gsub(pattern = "[��]",replacement = "ü", federal_state)
   federal_state <- gsub(pattern = "[�]",replacement = "�Y", federal_state)
+
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -358,10 +341,6 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
-  district <- gsub(pattern = "[��]",replacement = "ö", district)
-  district <- gsub(pattern = "[��]",replacement = "ä", district)
-  district <- gsub(pattern = "[��]",replacement = "ü", district)
-  district <- gsub(pattern = "[�]",replacement = "�Y", district)
   # check if district is consistent
   if(!is.na(district)){
     stopifnot("district does not exist" = is.element(district, data$Landkreis))
@@ -419,6 +398,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
     attr(result, "flag") <- "d_inf_Age"
   }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
     print("Age 2")
+    print(age_group_start)
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
       group_by(Landkreis) %>%
@@ -447,11 +427,6 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
 }
 
 get_recovered_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
-
-  federal_state <- gsub(pattern = "[��]",replacement = "ö", federal_state)
-  federal_state <- gsub(pattern = "[��]",replacement = "ä", federal_state)
-  federal_state <- gsub(pattern = "[��]",replacement = "ü", federal_state)
-  federal_state <- gsub(pattern = "[�]",replacement = "�Y", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -539,10 +514,12 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 
 get_recovered_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
+
   district <- gsub(pattern = "[��]",replacement = "ö", district)
   district <- gsub(pattern = "[��]",replacement = "ä", district)
   district <- gsub(pattern = "[��]",replacement = "ü", district)
   district <- gsub(pattern = "[�]",replacement = "�Y", district)
+
   # check if district is consistent
   if(!is.na(district)){
     print(district)
@@ -669,8 +646,14 @@ get_infections_overall <- function(data, age_group_start = NA, age_group_end = N
 # output: df with a column date_diff
 
 append_report_duration <- function(data){
-  data$date_diff <- as.Date(as.character(cov_data2$Meldedatum),
-                            format="%Y/%m/%d")-as.Date(as.character(cov_data2$Refdatum),format="%Y/%m/%d")
+
+  data %>%
+    filter(IstErkrankungsbeginn == "1")
+  data$date_diff <- as.Date(as.character(data$Meldedatum),format="%Y/%m/%d")-as.Date(as.character(data$Refdatum),format="%Y/%m/%d")
+  row_to_keep <- as.Date(as.character(data$Meldedatum),format="%Y/%m/%d")>=as.Date(as.character(data$Refdatum))
+  data <- data[row_to_keep,]
+  attr(data, "flag") <- "date_diff"
+  return(data)
 }
 
 # create a df with infections, deaths and mortalityrate
@@ -688,14 +671,16 @@ get_fallsterblichkeit_overall <- function(data, age_group_start = NA, age_group_
     get_deaths_per_district(data, age_group_start, age_group_end) -> result
     result$Infections <- x1$Infections
     result$Fallsterblichkeit <- result$Deaths/x1$Infections
+    attr(result, "flag") <- "DE_Fallsterblichkeit_age"
     return(result)
+
   }else{
   get_infections_per_district(data) -> x1
   get_deaths_per_district(data) -> result
   result$Infections <- x1$Infections
   result$Fallsterblichkeit <- result$Deaths/x1$Infections
+  attr(result, "flag") <- "DE_Fallsterblichkeit"
   return(result)
-
   }
 }
 
@@ -918,7 +903,13 @@ plot_function <- function(data){
          "DE_Fallsterblichkeit" = data %>%
            ggplot(aes(x = as.Date(Meldedatum), y = Fallsterblichkeit)) +
            xlab("Meldedatum") +
-           geom_bar(stat= "identity", position = "dodge", fill = "steelblue")
+           geom_bar(stat= "identity", position = "dodge", fill = "steelblue"),
+         "DE_Fallsterblichkeit_age" = "Not Plottable",
+         "date_diff" = data %>%
+           ggplot(aes(x = as.Date(Meldedatum), y = date_diff)) +
+           xlab("Meldedatum") +
+           ylab("Tage bis zum Meldedatum") +
+           geom_line()
          )
 }
 
@@ -952,6 +943,7 @@ remove_unclean_data <- function(data){
   unclean_NeuerTodesfall <- data$NeuerTodesfall == -1
   unclean_NeuGenesen <- data$NeuGenesen == -1
   unclean_Altersgruppe <- data$Altersgruppe == "unbekannt"
+  #unclean_date <- data$as.Date(as.character(cov_data$Meldedatum),format="%Y/%m/%d")>=as.Date(as.character(cov_data$Refdatum),format="%Y/%m/%d"))
   unclean_to_remove <- unclean_NeuerFall + unclean_NeuerTodesfall + unclean_NeuGenesen + unclean_Altersgruppe
   row_to_keep = !unclean_to_remove
   data <- data[row_to_keep,]
