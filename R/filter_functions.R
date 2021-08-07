@@ -5,7 +5,10 @@ library(stringr)
 library(lubridate)
 library(RcppRoll)
 
+
 cov_data <- read.csv("R/data.csv")
+
+
 
 source("R/population.R")
 
@@ -18,8 +21,8 @@ source("R/population.R")
 # outputs the rows of the input df that are between the specified dates
 
 filter_by_date <- function(data, date_start, date_end){
-  stopifnot("wrong format for date_start" = str_detect(date_start, "[:digit:]{4}//[:digit:]{2}//[:digit:]{2}"))
-  stopifnot("wrong format for date_end" = str_detect(date_end, "[:digit:]{4}//[:digit:]{2}//[:digit:]{2}"))
+  stopifnot("wrong format for date_start" = str_detect(date_start, "[:digit:]{4}[////][:digit:]{2}[////][:digit:]{2}"))
+  stopifnot("wrong format for date_end" = str_detect(date_end, "[:digit:]{4}[////][:digit:]{2}[////][:digit:]{2}"))
   result <- data[(as.Date(data$Meldedatum)> date_start & as.Date(data$Meldedatum) < date_end),]
   data %>%
     filter(Meldedatum %in% result$Meldedatum) -> result
@@ -244,6 +247,13 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
 }
 
 get_infections_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
+
+
+  federal_state <- gsub(pattern = "[��]",replacement = "ö", federal_state)
+  federal_state <- gsub(pattern = "[�A]",replacement = "ä", federal_state)
+  federal_state <- gsub(pattern = "[��]",replacement = "ü", federal_state)
+  federal_state <- gsub(pattern = "[�]",replacement = "�Y", federal_state)
+
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -504,6 +514,12 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 
 get_recovered_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
+
+  district <- gsub(pattern = "[��]",replacement = "ö", district)
+  district <- gsub(pattern = "[��]",replacement = "ä", district)
+  district <- gsub(pattern = "[��]",replacement = "ü", district)
+  district <- gsub(pattern = "[�]",replacement = "�Y", district)
+
   # check if district is consistent
   if(!is.na(district)){
     print(district)
@@ -665,8 +681,20 @@ get_fallsterblichkeit_overall <- function(data, age_group_start = NA, age_group_
   result$Fallsterblichkeit <- result$Deaths/x1$Infections
   attr(result, "flag") <- "DE_Fallsterblichkeit"
   return(result)
-
   }
+}
+
+# plots the plottable dataframe from get_fallsterblichkeit_overall
+#
+# data: a dataframe with mortalityrate for every day
+#
+# output: a plot showing the development of the mortalityrate
+
+plot_Fallsterblichkeit <- function(data){
+  data %>%
+    ggplot(aes(x = as.Date(Meldedatum), y = Fallsterblichkeit)) +
+    xlab("Meldedatum") +
+    geom_bar(stat= "identity", position = "dodge", fill = "steelblue")
 }
 
 # a function to automatically plot your dataframe from any get_x_per_y output
