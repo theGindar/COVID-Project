@@ -1,4 +1,5 @@
 source("R/filter_functions.R")
+library(Rcpp)
 library("testthat")
 
 sub_data = cov_data[seq(1, nrow(cov_data), 50), ]
@@ -377,72 +378,79 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
-  test22 <- get_recovered_per_district(sub_data,
+  test36 <- get_recovered_per_district(sub_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59",
                                         date_start = "2020/11/19",
                                         date_end = "2021/02/19")
-  expect_equal(attr(test22,"names"), c("Altersgruppe", "Meldedatum", "Recovered"))
+  expect_equal(attr(test36,"names"), c("Altersgruppe", "Meldedatum", "Recovered"))
 })
 
 # Test specification of Landkreis, Meldedatum
 
 test_that("Method is taking wrong if case",{
-  test23 <- get_recovered_per_district(cov_data,
+  test37 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         date_start = "2020/11/19",
                                         date_end = "2021/02/19")
-  expect_equal(attr(test23,"names"), c("Landkreis","Meldedatum", "Recovered"))
+  expect_equal(attr(test37,"names"), c("Landkreis","Meldedatum", "Recovered"))
 })
 
 # Test specification of Landkreis
 
 test_that("Method is taking wrong if case",{
-  test24 <- get_recovered_per_district(cov_data,
+  test38 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
   )
-  expect_equal(attr(test24,"names"), c("Landkreis", "Recovered"))
+  expect_equal(attr(test38,"names"), c("Landkreis", "Recovered"))
 })
 
 # Test specification of Landkreis, Altersgruppe
 
 test_that("Method is taking wrong if case",{
-  test25 <- get_recovered_per_district(cov_data,
+  test39 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         age_group_start = "A35",
                                         age_group_end = "A79"
   )
-  expect_equal(attr(test25,"names"), c("Landkreis","Altersgruppe", "Recovered"))
+  expect_equal(attr(test39,"names"), c("Landkreis","Altersgruppe", "Recovered"))
 })
 
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
-  test26 <- get_recovered_per_district(cov_data,
+  test40 <- get_recovered_per_district(cov_data,
                                         date_start = "2020/11/19",
                                         date_end = "2021/02/19"
   )
-  expect_equal(attr(test26,"names"), c("Meldedatum", "Recovered"))
+  expect_equal(attr(test40,"names"), c("Meldedatum", "Recovered"))
 })
 
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
-  test27 <- get_recovered_per_district(cov_data,
+  test41 <- get_recovered_per_district(cov_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59")
-  expect_equal(attr(test27,"names"), c("Altersgruppe", "Recovered"))
+  expect_equal(attr(test41,"names"), c("Altersgruppe", "Recovered"))
 })
 
 # Test specification of Altersgruppe, Meldedatum, Landkreis
 
 test_that("Method is taking wrong if case",{
-  test28 <- get_recovered_per_district(cov_data,
+  test42 <- get_recovered_per_district(cov_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59",
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         date_start = "2020/11/19",
                                         date_end = "2021/03/19")
-  expect_equal(attr(test28,"names"), c("Landkreis","Altersgruppe","Meldedatum","Recovered"))
+  expect_equal(attr(test42,"names"), c("Landkreis","Altersgruppe","Meldedatum","Recovered"))
 })
+
+
+
+
+
+
+
 

@@ -936,7 +936,7 @@ remove_unclean_data <- function(data){
   return(data)
 }
 
-# Patricks Part
+
 
 get_incidence_per_district <- function(data, incidence_days = 7) {
   #
