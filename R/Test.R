@@ -1,13 +1,15 @@
-source("R/filter_functions.R")
-library(Rcpp)
 library("testthat")
 
-sub_data = cov_data[seq(1, nrow(cov_data), 50), ]
+source("R/filter_functions.R")
+source("R/weather.R")
+
+cov_data <- read.csv("R/data.csv")
+# cov_data = cov_data[seq(1, nrow(cov_data), 50), ]
 
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
-  test1 <- get_deaths_per_federal_states(sub_data,
+  test1 <- get_deaths_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
                                          date_start = "2020/11/19",
@@ -459,10 +461,43 @@ test_that("Method is giving wrong output",{
   expect_equal(attr(test44,"names"), c("Altersgruppe","Deaths","Infections","Fallsterblichkeit"))
 })
 
+# Test get_incidence_per_district
+test_that("Method is giving wrong output",{
+  test45 <- get_incidence_per_district(cov_data,
+                                       age_group_start = "A15",
+                                       district = c("SK Bremerhaven"),
+                                       age_group_end = "A59",
+                                       date_start = "2020/01/01",
+                                       date_end = "2021/06/01")
+  expect_equal(attr(test45,"names"), c("Meldedatum","IdLandkreis","Landkreis","Inzidenz"))
+})
 
+# Test get_correlation_for_incidence_pairs
+test_that("Method is giving wrong output",{
+  test46_1 <- get_incidence_per_district(cov_data,
+                                         age_group_start = "A15",
+                                         district = c("SK Bremerhaven", "SK Kiel", "SK Flensburg"),
+                                         age_group_end = "A59",
+                                         date_start = "2020/01/01",
+                                         date_end = "2021/06/01")
+  test46_2 <- get_correlation_for_incidence_pairs(test46_1)
+  expect_equal(attr(test46_2,"names"), c("IdLandkreis_1","Landkreis_1","IdLandkreis_2", "Landkreis_2", "Correlation"))
+})
 
+# Test weather function
+add_weather_data(cov_data)
 
+test_that("Method is giving wrong output",{
+  test47 <- add_weather_data(cov_data)
 
-
-
-
+  expect_equal(attr(test47,"names"), c("ObjectId","IdBundesland",
+                                       "Bundesland", "Landkreis",
+                                       "Altersgruppe", "Geschlecht",
+                                       "AnzahlFall", "AnzahlTodesfall",
+                                       "Meldedatum", "IdLandkreis",
+                                       "Datenstand", "NeuerFall",
+                                       "NeuerTodesfall", "Refdatum",
+                                       "NeuGenesen", "AnzahlGenesen",
+                                       "IstErkrankungsbeginn", "Altersgruppe2",
+                                       "Temperatur"))
+})
