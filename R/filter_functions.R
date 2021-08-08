@@ -89,10 +89,11 @@ filter_by_age_group <- function(data, age_group_start = NA, age_group_end = NA) 
 
 get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
 
-  federal_state <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", federal_state)
+  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[äÄ]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
+
 
 
   # check if federal state is consistent
@@ -175,10 +176,11 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
 get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA){
 
 
-  district <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", district)
+  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
+
 
   # check if district is consistent
   if(!is.na(district)){
@@ -260,10 +262,10 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
 get_infections_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
 
 
-  federal_state <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", federal_state)
+  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[äÄ]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -351,10 +353,10 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
 
 get_infections_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
-  district <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", district)
+  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
 
 
   # check if district is consistent
@@ -445,10 +447,10 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
 get_recovered_per_federal_states <- function(data, age_group_start = NA, age_group_end = NA, federal_state = NA, date_start = NA, date_end = NA) {
 
 
-  federal_state <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", federal_state)
-  federal_state <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", federal_state)
+  federal_state <- gsub(pattern = "[öÖ]",replacement = "Ã¶", federal_state)
+  federal_state <- gsub(pattern = "[äÄ]",replacement = "Ã¤", federal_state)
+  federal_state <- gsub(pattern = "[üÜ]",replacement = "Ã¼", federal_state)
+  federal_state <- gsub(pattern = "[ß]",replacement = "ÃY", federal_state)
 
   # check if federal state is consistent
   if(!is.na(federal_state)){
@@ -537,10 +539,10 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
 get_recovered_per_district <- function(data, age_group_start = NA, age_group_end = NA, district = NA, date_start = NA, date_end = NA) {
 
 
-  district <- gsub(pattern = "[ÃƒÂ¶]",replacement = "Ã¶", district)
-  district <- gsub(pattern = "[ÃƒÂ¤]",replacement = "Ã¤", district)
-  district <- gsub(pattern = "[ÃƒÂ¼]",replacement = "Ã¼", district)
-  district <- gsub(pattern = "[ÃƒÅ¸]",replacement = "ÃŸ", district)
+  district <- gsub(pattern = "[öÖ]",replacement = "Ã¶", district)
+  district <- gsub(pattern = "[äÄ]",replacement = "Ã¤", district)
+  district <- gsub(pattern = "[üÜ]",replacement = "Ã¼", district)
+  district <- gsub(pattern = "[ß]",replacement = "ÃY", district)
 
 
   # check if district is consistent
