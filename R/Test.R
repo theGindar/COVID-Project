@@ -447,6 +447,18 @@ test_that("Method is taking wrong if case",{
   expect_equal(attr(test42,"names"), c("Landkreis","Altersgruppe","Meldedatum","Recovered"))
 })
 
+# Test correct output of get_infections_overall
+
+test_that("Method is giving wrong output",{
+  test43 <- get_fallsterblichkeit_overall(cov_data)
+  expect_equal(attr(test43,"names"), c("Meldedatum","Deaths","Infections","Fallsterblichkeit"))
+})
+
+test_that("Method is giving wrong output",{
+  test44 <- get_fallsterblichkeit_overall(cov_data,age_group_start = "A15", age_group_end = "A59")
+  expect_equal(attr(test44,"names"), c("Altersgruppe","Deaths","Infections","Fallsterblichkeit"))
+})
+
 
 
 
