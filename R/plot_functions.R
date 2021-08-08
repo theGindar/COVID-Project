@@ -11,10 +11,10 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
              scale_y_continuous(
 
                # Features of the first axis
-               name = axis_1,
+               name = sec_axis(~.*scaling_coeff, name="Durchschnittl. Temperatur in [°C]",
 
                # Add a second axis and specify its features
-               sec.axis = sec_axis(~.*scaling_coeff, name="Durchschnittl. Temperatur in [°C]")
+               sec.axis = axis_1)
              ))
   }
 
