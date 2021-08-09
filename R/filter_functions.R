@@ -199,7 +199,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
     print("Landkreis Datum")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Landkreis, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Meldedatum) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
@@ -208,15 +208,16 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
     print("Landkreis")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
+      group_by(IdLandkreis, Landkreis) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) %>%
       filter(Landkreis %in% district) -> result
     attr(result, "flag") <- "d_deaths_Landkreis"
+    print(attr(result, "flag"))
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)) {
     print("Landkreis Age")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Deaths = sum(AnzahlTodesfall))  %>%
       filter(Landkreis %in% district) -> result
@@ -241,7 +242,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
     print("Landkreis Age Datum")
     data %>%
       filter(NeuerTodesfall %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe, Meldedatum) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
@@ -254,8 +255,7 @@ get_deaths_per_district <- function(data, age_group_start = NA, age_group_end = 
       group_by(Meldedatum) %>%
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "d_deaths"
-  }
-  result <- ungroup(result)
+    }
   return(result)
 }
 
@@ -347,7 +347,6 @@ get_infections_per_federal_states <- function(data, age_group_start = NA, age_gr
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "f_inf"
   }
-  result <- ungroup(result)
   return(result)
 }
 
@@ -376,7 +375,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
     print("Landkreis Datum")
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
-      group_by(Landkreis, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Meldedatum) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Infections = sum(AnzahlFall)) -> result
@@ -385,7 +384,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
     print("Landkreis")
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
+      group_by(IdLandkreis, Landkreis) %>%
       summarize(Infections = sum(AnzahlFall)) %>%
       filter(Landkreis %in% district) -> result
     attr(result, "flag") <- "d_inf_Landkreis"
@@ -393,7 +392,7 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
     print("Landkreis Age")
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) %>%
       filter(Landkreis %in% district) -> result
@@ -419,14 +418,14 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
     print(age_group_start)
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
+      group_by(IdLandkreis, Landkreis) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Infections = sum(AnzahlFall)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe, Meldedatum) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
@@ -440,7 +439,6 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "d_inf"
   }
-  result <- ungroup(result)
   return(result)
 }
 
@@ -532,7 +530,6 @@ get_recovered_per_federal_states <- function(data, age_group_start = NA, age_gro
       summarize(Recovered = sum(AnzahlGenesen)) -> result
     attr(result, "flag") <- "f_rec"
   }
-  result <- ungroup(result)
   return(result)
 }
 
@@ -563,7 +560,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
     print("Landkreis Datum")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Meldedatum) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
@@ -572,7 +569,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
     print("Landkreis")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
+      group_by(IdLandkreis, Landkreis) %>%
       summarize(Recovered = sum(AnzahlGenesen)) %>%
       filter(Landkreis %in% district) -> result
     attr(result, "flag") <- "d_rec_Landkreis"
@@ -580,7 +577,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
     print("Landkreis Age")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) %>%
       filter(Landkreis %in% district) -> result
@@ -605,14 +602,14 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
     print("Age 2")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis) %>%
+      group_by(IdLandkreis, Landkreis) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       summarize(Recovered = sum(AnzahlGenesen)) -> result
   }else if(!is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Landkreis Age Datum")
     data %>%
       filter(NeuGenesen %in% c(0,1)) %>%
-      group_by(Landkreis, Altersgruppe, Meldedatum) %>%
+      group_by(IdLandkreis, Landkreis, Altersgruppe, Meldedatum) %>%
       filter_by_age_group(age_group_start, age_group_end) %>%
       filter(Landkreis %in% district) %>%
       filter_by_date(date_start, date_end)  %>%
@@ -660,7 +657,6 @@ get_infections_overall <- function(data, age_group_start = NA, age_group_end = N
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "f_inf_Datum"
   }
-  result <- ungroup(result)
   return(result)
 }
 

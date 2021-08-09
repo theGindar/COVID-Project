@@ -2,7 +2,7 @@ library("testthat")
 
 source("R/filter_functions.R")
 source("R/weather.R")
-
+options(warn = -1)
 cov_data <- read.csv("R/data.csv")
 # cov_data = cov_data[seq(1, nrow(cov_data), 50), ]
 
@@ -98,7 +98,7 @@ test_that("Method is taking wrong if case",{
                                          district = c("SK Flensburg", "SK Krefeld"),
                                          date_start = "2020/11/19",
                                          date_end = "2021/02/19")
-  expect_equal(attr(test9,"names"), c("Landkreis","Meldedatum", "Deaths"))
+  expect_equal(attr(test9,"names"), c("IdLandkreis", "Landkreis","Meldedatum", "Deaths"))
 })
 
 # Test specification of Landkreis
@@ -107,7 +107,7 @@ test_that("Method is taking wrong if case",{
   test10 <- get_deaths_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
   )
-  expect_equal(attr(test10,"names"), c("Landkreis", "Deaths"))
+  expect_equal(attr(test10,"names"), c("IdLandkreis", "Landkreis", "Deaths"))
 })
 
 # Test specification of Landkreis, Altersgruppe
@@ -118,7 +118,7 @@ test_that("Method is taking wrong if case",{
                                          age_group_start = "A35",
                                          age_group_end = "A79"
   )
-  expect_equal(attr(test11,"names"), c("Landkreis","Altersgruppe", "Deaths"))
+  expect_equal(attr(test11,"names"), c("IdLandkreis", "Landkreis","Altersgruppe", "Deaths"))
 })
 
 # Test specification of Landkreis
@@ -149,7 +149,7 @@ test_that("Method is taking wrong if case",{
                                     district = c("SK Flensburg", "SK Krefeld"),
                                          date_start = "2020/11/19",
                                          date_end = "2021/03/19")
-  expect_equal(attr(test14,"names"), c("Landkreis","Altersgruppe","Meldedatum","Deaths"))
+  expect_equal(attr(test14,"names"), c("IdLandkreis", "Landkreis","Altersgruppe","Meldedatum","Deaths"))
 })
 
 ### Infections + Bundesland testen
@@ -247,7 +247,7 @@ test_that("Method is taking wrong if case",{
                                    district = c("SK Flensburg", "SK Krefeld"),
                                    date_start = "2020/11/19",
                                    date_end = "2021/02/19")
-  expect_equal(attr(test23,"names"), c("Landkreis","Meldedatum", "Infections"))
+  expect_equal(attr(test23,"names"), c("IdLandkreis", "Landkreis","Meldedatum", "Infections"))
 })
 
 # Test specification of Landkreis
@@ -256,7 +256,7 @@ test_that("Method is taking wrong if case",{
   test24 <- get_infections_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
   )
-  expect_equal(attr(test24,"names"), c("Landkreis", "Infections"))
+  expect_equal(attr(test24,"names"), c("IdLandkreis", "Landkreis", "Infections"))
 })
 
 # Test specification of Landkreis, Altersgruppe
@@ -267,7 +267,7 @@ test_that("Method is taking wrong if case",{
                                     age_group_start = "A35",
                                     age_group_end = "A79"
   )
-  expect_equal(attr(test25,"names"), c("Landkreis","Altersgruppe", "Infections"))
+  expect_equal(attr(test25,"names"), c("IdLandkreis", "Landkreis","Altersgruppe", "Infections"))
 })
 
 # Test specification of Meldedatum
@@ -298,7 +298,7 @@ test_that("Method is taking wrong if case",{
                                     district = c("SK Flensburg", "SK Krefeld"),
                                     date_start = "2020/11/19",
                                     date_end = "2021/03/19")
-  expect_equal(attr(test28,"names"), c("Landkreis","Altersgruppe","Meldedatum","Infections"))
+  expect_equal(attr(test28,"names"), c("IdLandkreis", "Landkreis","Altersgruppe","Meldedatum","Infections"))
 })
 
 ### Recovered + Bundesland testen
@@ -395,7 +395,7 @@ test_that("Method is taking wrong if case",{
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         date_start = "2020/11/19",
                                         date_end = "2021/02/19")
-  expect_equal(attr(test37,"names"), c("Landkreis","Meldedatum", "Recovered"))
+  expect_equal(attr(test37,"names"), c("IdLandkreis", "Landkreis","Meldedatum", "Recovered"))
 })
 
 # Test specification of Landkreis
@@ -404,7 +404,7 @@ test_that("Method is taking wrong if case",{
   test38 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
   )
-  expect_equal(attr(test38,"names"), c("Landkreis", "Recovered"))
+  expect_equal(attr(test38,"names"), c("IdLandkreis", "Landkreis", "Recovered"))
 })
 
 # Test specification of Landkreis, Altersgruppe
@@ -415,7 +415,7 @@ test_that("Method is taking wrong if case",{
                                         age_group_start = "A35",
                                         age_group_end = "A79"
   )
-  expect_equal(attr(test39,"names"), c("Landkreis","Altersgruppe", "Recovered"))
+  expect_equal(attr(test39,"names"), c("IdLandkreis", "Landkreis","Altersgruppe", "Recovered"))
 })
 
 # Test specification of Meldedatum
@@ -446,7 +446,7 @@ test_that("Method is taking wrong if case",{
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         date_start = "2020/11/19",
                                         date_end = "2021/03/19")
-  expect_equal(attr(test42,"names"), c("Landkreis","Altersgruppe","Meldedatum","Recovered"))
+  expect_equal(attr(test42,"names"), c("IdLandkreis", "Landkreis","Altersgruppe","Meldedatum","Recovered"))
 })
 
 # Test correct output of get_infections_overall

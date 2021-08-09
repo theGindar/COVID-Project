@@ -142,3 +142,12 @@ incidences_df <- get_incidence_per_district(cov_data, 7)
 incidence_correlation_pairs <- get_correlation_for_incidence_pairs(incidences_df)
 
 plot_incidence_correlations_barchart(incidence_correlation_pairs)
+
+# --- tote per landkreis auf karte plotten
+
+cov_data %>%
+  distinct(Landkreis) -> landkreise
+landkreise <- landkreise$Landkreis
+
+d_p_d <- get_deaths_per_district(cov_data, district = landkreise)
+plot_district_map(d_p_d)
