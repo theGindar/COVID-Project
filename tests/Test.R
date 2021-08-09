@@ -2,13 +2,15 @@
 
 #source("R/filter_functions.R")
 #source("R/weather.R")
-options(warn = -1)
-cov_data <- read.csv("extdata/data.csv")
+#options(warn = -1)
+#cov_data <- read.csv("extdata/data.csv")
 # cov_data = cov_data[seq(1, nrow(cov_data), 50), ]
 
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test1 <- get_deaths_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -20,6 +22,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test2 <- get_deaths_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin"),
                                          date_start = "2020/11/19",
@@ -30,6 +34,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test3 <- get_deaths_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin", "Bayern"),
   )
@@ -39,6 +45,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test4 <- get_deaths_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin"),
                                          age_group_start = "A35",
@@ -50,6 +58,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test5 <- get_deaths_per_federal_states(cov_data,
                                          date_start = "2020/11/19",
                                          date_end = "2021/02/19"
@@ -60,6 +70,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test6 <- get_deaths_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59")
@@ -69,6 +81,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test7 <- get_deaths_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -83,6 +97,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test8 <- get_deaths_per_district(sub_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -94,6 +110,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test9 <- get_deaths_per_district(cov_data,
                                          district = c("SK Flensburg", "SK Krefeld"),
                                          date_start = "2020/11/19",
@@ -104,6 +122,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test10 <- get_deaths_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
   )
@@ -113,6 +133,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test11 <- get_deaths_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
                                          age_group_start = "A35",
@@ -124,6 +146,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test12 <- get_deaths_per_district(cov_data,
                                          date_start = "2020/11/19",
                                          date_end = "2021/02/19"
@@ -134,6 +158,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test13 <- get_deaths_per_district(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59")
@@ -143,6 +169,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test14 <- get_deaths_per_district(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -157,6 +185,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test15 <- get_infections_per_federal_states(sub_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -168,6 +198,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test16 <- get_infections_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin"),
                                          date_start = "2020/11/19",
@@ -178,6 +210,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test17 <- get_infections_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin", "Bayern"),
   )
@@ -187,6 +221,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test18 <- get_infections_per_federal_states(cov_data,
                                          federal_state = c("Hessen", "Berlin"),
                                          age_group_start = "A35",
@@ -198,6 +234,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test19 <- get_infections_per_federal_states(cov_data,
                                          date_start = "2020/11/19",
                                          date_end = "2021/02/19"
@@ -208,6 +246,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test20 <- get_infections_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59")
@@ -217,6 +257,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test21 <- get_infections_per_federal_states(cov_data,
                                          age_group_start = "A15",
                                          age_group_end = "A59",
@@ -232,6 +274,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test22 <- get_infections_per_district(sub_data,
                                    age_group_start = "A15",
                                    age_group_end = "A59",
@@ -243,6 +287,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test23 <- get_infections_per_district(cov_data,
                                    district = c("SK Flensburg", "SK Krefeld"),
                                    date_start = "2020/11/19",
@@ -253,6 +299,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test24 <- get_infections_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
   )
@@ -262,6 +310,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test25 <- get_infections_per_district(cov_data,
                                     district = c("SK Flensburg", "SK Krefeld"),
                                     age_group_start = "A35",
@@ -273,6 +323,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test26 <- get_infections_per_district(cov_data,
                                     date_start = "2020/11/19",
                                     date_end = "2021/02/19"
@@ -283,6 +335,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test27 <- get_infections_per_district(cov_data,
                                     age_group_start = "A15",
                                     age_group_end = "A59")
@@ -292,6 +346,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test28 <- get_infections_per_district(cov_data,
                                     age_group_start = "A15",
                                     age_group_end = "A59",
@@ -306,6 +362,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test29 <- get_recovered_per_federal_states(sub_data,
                                               age_group_start = "A15",
                                               age_group_end = "A59",
@@ -317,6 +375,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test30 <- get_recovered_per_federal_states(cov_data,
                                               federal_state = c("Hessen", "Berlin"),
                                               date_start = "2020/11/19",
@@ -327,6 +387,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test31 <- get_recovered_per_federal_states(cov_data,
                                               federal_state = c("Hessen", "Berlin", "Bayern"),
   )
@@ -336,6 +398,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Bundesland, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test32 <- get_recovered_per_federal_states(cov_data,
                                               federal_state = c("Hessen", "Berlin"),
                                               age_group_start = "A35",
@@ -347,6 +411,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test33 <- get_recovered_per_federal_states(cov_data,
                                               date_start = "2020/11/19",
                                               date_end = "2021/02/19"
@@ -357,6 +423,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test34 <- get_recovered_per_federal_states(cov_data,
                                               age_group_start = "A15",
                                               age_group_end = "A59")
@@ -366,6 +434,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Bundesland
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test35 <- get_recovered_per_federal_states(cov_data,
                                               age_group_start = "A15",
                                               age_group_end = "A59",
@@ -380,6 +450,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test36 <- get_recovered_per_district(sub_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59",
@@ -391,6 +463,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test37 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         date_start = "2020/11/19",
@@ -401,6 +475,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test38 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
   )
@@ -410,6 +486,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Landkreis, Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test39 <- get_recovered_per_district(cov_data,
                                         district = c("SK Flensburg", "SK Krefeld"),
                                         age_group_start = "A35",
@@ -421,6 +499,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Meldedatum
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test40 <- get_recovered_per_district(cov_data,
                                         date_start = "2020/11/19",
                                         date_end = "2021/02/19"
@@ -431,6 +511,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test41 <- get_recovered_per_district(cov_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59")
@@ -440,6 +522,8 @@ test_that("Method is taking wrong if case",{
 # Test specification of Altersgruppe, Meldedatum, Landkreis
 
 test_that("Method is taking wrong if case",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test42 <- get_recovered_per_district(cov_data,
                                         age_group_start = "A15",
                                         age_group_end = "A59",
@@ -452,17 +536,23 @@ test_that("Method is taking wrong if case",{
 # Test correct output of get_infections_overall
 
 test_that("Method is giving wrong output",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test43 <- get_fallsterblichkeit_overall(cov_data)
   expect_equal(attr(test43,"names"), c("Meldedatum","Deaths","Infections","Fallsterblichkeit"))
 })
 
 test_that("Method is giving wrong output",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test44 <- get_fallsterblichkeit_overall(cov_data,age_group_start = "A15", age_group_end = "A59")
   expect_equal(attr(test44,"names"), c("Altersgruppe","Deaths","Infections","Fallsterblichkeit"))
 })
 
 # Test get_incidence_per_district
 test_that("Method is giving wrong output",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test45 <- get_incidence_per_district(cov_data,
                                        age_group_start = "A15",
                                        district = c("SK Bremerhaven"),
@@ -474,6 +564,8 @@ test_that("Method is giving wrong output",{
 
 # Test get_correlation_for_incidence_pairs
 test_that("Method is giving wrong output",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test46_1 <- get_incidence_per_district(cov_data,
                                          age_group_start = "A15",
                                          district = c("SK Bremerhaven", "SK Kiel", "SK Flensburg"),
@@ -486,6 +578,8 @@ test_that("Method is giving wrong output",{
 
 # Test weather function
 test_that("Method is giving wrong output",{
+  options(warn = -1)
+  cov_data <- read.csv("extdata/data.csv")
   test47 <- add_weather_data(cov_data)
 
   expect_equal(attr(test47,"names"), c("ObjectId","IdBundesland",
