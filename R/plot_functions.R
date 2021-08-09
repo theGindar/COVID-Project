@@ -1,5 +1,7 @@
 library(ggplot2)
 
+source("R/map.R")
+
 plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
   if(add_weather){
     data <- add_weather_data(data)
@@ -131,7 +133,6 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
            ggplot(aes(x = Altersgruppe, y = Infections, color = Bundesland)) +
            geom_bar(stat= "identity", aes(fill = Bundesland), position = "dodge") +
            geom_text(aes(label = Infections),vjust = -0.3, color = "black", size = 3.5),
-         #### hier ###################################################################################################################
          "f_inf_Datum" = {
            if(add_weather) y_val <- data$Infections / scaling_coeff
            else y_val <- data$Infections
@@ -347,6 +348,30 @@ plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
     geom_bar(stat = "identity", fill="steelblue")
 }
 
+plot_district_map <- function(data) {
+  stopifnot("provided dataframe should have a flag attribute" = !is.null(attr(data, "flag")))
+  switch(attr(data, "flag"),
+         "d_deaths_Landkreis" = {
+           data <- ungroup(data)
+           data %>%
+             select(IdLandkreis, datapoints = Deaths) -> data
+           plot_map(data, plot_title = "Tote pro Landkreis", legend_title = "Anzahl Tote")
+         },
+         "d_inf_Landkreis" = {
+           data <- ungroup(data)
+           data %>%
+             select(IdLandkreis, datapoints = Infections) -> data
+           plot_map(data, plot_title = "Infizierte pro Landkreis", legend_title = "Anzahl Infizierte")
+         },
+         "d_rec_Landkreis" = {
+           data <- ungroup(data)
+           data %>%
+             select(IdLandkreis, datapoints = Recovered) -> data
+           plot_map(data, plot_title = "Genesene pro Landkreis", legend_title = "Anzahl Genesene")
+         })
+}
+
+
 
 source("R/filter_functions.R")
 source("R/weather.R")
@@ -357,6 +382,8 @@ dat_2 <- add_weather_data(dat_1)
 dat_1
 plot_function(dat_1, add_weather = TRUE)
 dat_2
+attr(d_p_d, "flag") <- "d_deaths_Landkreis"
+attributes(d_p_d)
 
 write(unique(cov_data$IdLandkreis), file = "R/geo_data/district_ids.txt")
 disids <- scan("R/geo_data/district_ids.txt", integer(), quote = "")

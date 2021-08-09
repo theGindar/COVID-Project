@@ -72,7 +72,7 @@ plot_map <- function(cov_data, plot_title, legend_title){
       geom_polygon(data = federal_states_shp, aes(x = long, y = lat, group = group),
                    alpha = 0, color = "black", size = 1.0) +
       coord_map() +
-      scale_fill_gradient2(midpoint = median_datapoints_value, low = "green", mid = "yellow",
+      scale_fill_gradient2(midpoint = median_datapoints_value*3, low = "green", mid = "yellow",
                            high = "red", space = "Lab", limits=c(0, max_datapoints_value), oob=squish,
                            name = legend_title) +
       theme_nothing(legend = TRUE) +
