@@ -3,21 +3,23 @@ library(ggplot2)
 source("R/map.R")
 
 plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
+
   if(add_weather){
     data <- add_weather_data(data)
   }
 
   add_weather_line <- function(cov_plot, axis_1) {
     return(cov_plot +
-             stat_smooth(aes(x = as.Date(Meldedatum), y = data$Temperatur, color=1))+
+             stat_smooth(aes(x = as.Date(Meldedatum), y = data$Temperatur), geom="area", alpha=.4, color="brown1", fill="brown1") +
              scale_y_continuous(
 
-               # Features of the first axis
-               name = sec_axis(~.*scaling_coeff, name="Durchschnittl. Temperatur in [°C]",
+               name = "Durchschnittl. Temperatur in [°C]",
 
-               # Add a second axis and specify its features
-               sec.axis = axis_1)
-             ))
+               sec.axis = sec_axis(~.*scaling_coeff, name = axis_1),
+
+               expand = c(0, 0))
+
+             )
   }
 
   switch(attr(data, "flag"),
@@ -28,7 +30,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Deaths")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "f_deaths_Bundesland-Datum" = {
@@ -39,7 +42,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "f_deaths_Bundesland" = data %>%
@@ -57,7 +61,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "f_deaths_Age" = data %>%
@@ -72,7 +77,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "d_deaths_Landkreis-Datum" = {
@@ -82,7 +88,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "d_deaths_Landkreis" = data %>%
@@ -100,7 +107,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Tote")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "d_deaths_Age" = data %>%
@@ -117,7 +125,8 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
+
            cov_plot
            },
          "f_inf_Bundesland-Datum" = data %>%
@@ -142,7 +151,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -158,7 +167,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -169,7 +178,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -188,7 +197,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -204,7 +213,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -215,7 +224,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -234,7 +243,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -250,7 +259,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -261,7 +270,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -280,7 +289,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700){
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Genesene")
-           }
+           } else cov_plot <- cov_plot + scale_y_continuous(expand = c(0, 0))
 
            cov_plot
            },
@@ -384,6 +393,7 @@ plot_function(dat_1, add_weather = TRUE)
 dat_2
 attr(d_p_d, "flag") <- "d_deaths_Landkreis"
 attributes(d_p_d)
+
 
 write(unique(cov_data$IdLandkreis), file = "R/geo_data/district_ids.txt")
 disids <- scan("R/geo_data/district_ids.txt", integer(), quote = "")
