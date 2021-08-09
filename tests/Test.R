@@ -1,9 +1,9 @@
-library("testthat")
+#library("testthat")
 
-source("R/filter_functions.R")
-source("R/weather.R")
+#source("R/filter_functions.R")
+#source("R/weather.R")
 options(warn = -1)
-cov_data <- read.csv("R/data.csv")
+cov_data <- read.csv("extdata/data.csv")
 # cov_data = cov_data[seq(1, nrow(cov_data), 50), ]
 
 # Test specification of Altersgruppe, Meldedatum
@@ -485,8 +485,6 @@ test_that("Method is giving wrong output",{
 })
 
 # Test weather function
-add_weather_data(cov_data)
-
 test_that("Method is giving wrong output",{
   test47 <- add_weather_data(cov_data)
 
