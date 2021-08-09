@@ -150,4 +150,7 @@ cov_data %>%
 landkreise <- landkreise$Landkreis
 
 d_p_d <- get_deaths_per_district(cov_data, district = landkreise)
+
 plot_district_map(d_p_d)
+
+#plot_district_map(d_p_d, "R", "mapplot")
