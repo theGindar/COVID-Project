@@ -100,7 +100,6 @@ add_weather_data <- function(cov_data) {
   if(!file.exists("R/weather_data/weather_data_df.csv")) download_weather_data()
 
   df_weather_data <- read.csv("R/weather_data/weather_data_df.csv")
-  print(df_weather_data)
 
   # if IdLandkreis exists in data add temperatures
   if("IdLandkreis" %in% colnames(cov_data)) {
