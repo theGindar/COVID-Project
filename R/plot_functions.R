@@ -371,7 +371,9 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700, save_in 
          "d_rec_Landkreis-Age-Datum" = "Datum Alter Landkreis")
 }
 
-plot_incidence_correlations_matrix <- function(correlations_data, districts = NA) {
+plot_incidence_correlations_matrix <- function(correlations_data, districts = NA, save_in = NA, file_name = NA) {
+  save_plot <- !is.na(save_in) & !is.na(file_name)
+
   suppressWarnings(if(!is.na(districts)) {
     correlations_data %>%
       filter(Landkreis_1 %in% districts) %>%
@@ -401,13 +403,19 @@ plot_incidence_correlations_matrix <- function(correlations_data, districts = NA
     correlations_data <- rbind(correlations_data, new_row_df)
   }
 
-  ggplot(data = correlations_data, aes(x = Landkreis_1, y = Landkreis_2,
+  cov_plot <- ggplot(data = correlations_data, aes(x = Landkreis_1, y = Landkreis_2,
                                        fill = Correlation)) +
     geom_tile()
+
+  if(save_plot) ggsave(paste0(file_name, ".png"),
+                                    plot = cov_plot, width = 10, height = 10, path=save_in)
+  else cov_plot
 }
 
 
-plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
+plot_incidence_correlations_barchart <- function(correlations_data, top = 10, save_in = NA, file_name = NA) {
+  save_plot <- !is.na(save_in) & !is.na(file_name)
+
   correlations_data %>%
     arrange(desc(Correlation)) -> correlations_data
 
@@ -419,7 +427,7 @@ plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
   ylim_min <- min(correlations_data$Correlation)-0.001
   if(ylim_min < 0) ylim_min <- 0
   ylim_max <- max(correlations_data$Correlation)
-  ggplot(correlations_data, aes(x=reorder(namings, -Correlation),
+  cov_plot <- ggplot(correlations_data, aes(x=reorder(namings, -Correlation),
                                 y=Correlation)) +
     #scale_fill_brewer(palette = "Set1") +
     theme(axis.text.x = element_text(angle = 70, vjust = 1, hjust=1)) +
@@ -427,29 +435,40 @@ plot_incidence_correlations_barchart <- function(correlations_data, top = 10) {
     ggtitle(paste0("Top ", as.character(top), " Correlation Pairs of District's Incidences")) +
     xlab("District Pairs") + ylab("Incident Correlation") +
     geom_bar(stat = "identity", fill="steelblue")
+
+  if(save_plot) ggsave(paste0(file_name, ".png"),
+                       plot = cov_plot, width = 10, height = 10, path=save_in)
+  else cov_plot
 }
 
-plot_district_map <- function(data) {
+plot_district_map <- function(data, save_in = NA, file_name = NA) {
   stopifnot("provided dataframe should have a flag attribute" = !is.null(attr(data, "flag")))
+
+  save_plot <- !is.na(save_in) & !is.na(file_name)
+
   switch(attr(data, "flag"),
          "d_deaths_Landkreis" = {
            data <- ungroup(data)
            data %>%
              select(IdLandkreis, datapoints = Deaths) -> data
-           plot_map(data, plot_title = "Tote pro Landkreis", legend_title = "Anzahl Tote")
+           cov_plot <- plot_map(data, plot_title = "Tote pro Landkreis", legend_title = "Anzahl Tote")
          },
          "d_inf_Landkreis" = {
            data <- ungroup(data)
            data %>%
              select(IdLandkreis, datapoints = Infections) -> data
-           plot_map(data, plot_title = "Infizierte pro Landkreis", legend_title = "Anzahl Infizierte")
+           cov_plot <- plot_map(data, plot_title = "Infizierte pro Landkreis", legend_title = "Anzahl Infizierte")
          },
          "d_rec_Landkreis" = {
            data <- ungroup(data)
            data %>%
              select(IdLandkreis, datapoints = Recovered) -> data
-           plot_map(data, plot_title = "Genesene pro Landkreis", legend_title = "Anzahl Genesene")
+           cov_plot <- plot_map(data, plot_title = "Genesene pro Landkreis", legend_title = "Anzahl Genesene")
          })
+
+  if(save_plot) ggsave(paste0(file_name, ".png"),
+                       plot = cov_plot, width = 10, height = 10, path=save_in)
+  else cov_plot
 }
 
 
