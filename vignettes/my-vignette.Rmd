@@ -3,7 +3,7 @@ title: "COVID-Project"
 author: "Patrick Günther, David Scheid, Feisal Ahmad"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{filter_functions.R}
+  %\VignetteIndexEntry{COVID-Project}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,11 +14,66 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+Das COVID-Project ist ein Package, welches dem Nutzer aktuelle Daten des Robert-Koch-Instituts zur Coronapandemie zur Verfügung stellt. Die Datentabelle wird anhand der Anforderungen des Nutzers neu gefiltert und Daten werden aggregiert, um dem Nutzer spezifische Fragen zu den Coronazahlen zu beantworten. Zudem können die Daten in verschiedensten Plots dargestellt werden.
 
+# Setup
+
+Führe den untenstehenden Befehl aus, um das Package zu laden.
 ```{r setup}
-library(covid-project)
+library(covidproject)
+```
+Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts heruntergeladen werden:
+
+```{covid daten laden}
+covidproject::Data_Downloader
+data_downloader()
 ```
 
-```{HOW-TO}
-COVID-project::get
+# Filter functions
+
+Die *filter functions* dienen dazu, die umfangreiche Datentabelle des Robert-Koch-Instituts, welche alle Fälle seit Beginn der Pandemie führt, zu filtern und Daten zu aggregieren. 
+```{filter function setup}
+covidproject::filter_functions
 ```
+
+## get-Methoden
+
+Jede *get_...-Methode* gibt eine neue Datentabelle zurück, die dem Nutzer genau die gewünschte Information aufzeigt. 
+Folgende Eingabeparameter kann der Nutzer variieren:
+
++ *age_group_start*: Ab welchem Alter will man Ergebnisse sehen
++ *age_group_end*: Bis zu welchem Alter will man Ergebnisse sehen
++ *date_start*: Ab welchem Datum will man Ergebnisse sehen
++ *date_end*: Bis zu welchem Datum will man Ergebnisse sehen
++ *federal_state* oder *district*: Je nach Methode, welche Bundesländer bzw. Landkreise will man sehen
+
+Mit der Methode *get_deaths_per_federal_state* kann man sich zum Beispiel Todeszahlen zu einzelnen Bundesländern anzeigen lassen.
+```{get_deaths_per_federal_state}
+deaths_bayern_hessen <- get_deaths_per_federal_state(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
+```
+Hier wird eine Tabelle mit der Anzahl von Todesfällen in Bayern und Hessen im Zeitraum vom 1. Juni 2020 bis 1. Dezember 2020 ausgegeben. Es werden hierbei alle Altersgruppen betrachtet, da diese nicht mittels der Parameter eingeschränkt wurden.
+Weitere Beispiele gibt es mit der Funktion *covidproject::examples*.
+
+# Plot functions
+
+Die *plot functions* dienen dazu die neu generierten Datentabellen grafisch darzustellen. Hierbei muss der Nutzer keine weiteren Parameter angeben. Die Funktion findet automatisch zu jeder Tabelle den passenden Plot.
+
+```{plot functions}
+covidproject::plotfunctions
+```
+
+Um die Beispieltabelle von oben zu plotten, kann ganz einfach folgender Befehl ausgeführt werden:
+
+```{plot deaths}
+plot_function(deaths_bayern_hessen)
+```
+
+# Fragestellungen
+
+## Erkrankungsdatum
+
+## Vergleich von Landkreisen
+
+## Fallsterblichkeit
+
+## Wetter
