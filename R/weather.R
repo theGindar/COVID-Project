@@ -98,7 +98,7 @@ download_weather_data <- function() {
 
   # save data
   fpath <- system.file("extdata/weather_data", "weather_data_df.csv", package="covidproject")
-  write.csv(df_weather_data_all, "extdata/weather_data/weather_data_df.csv", row.names = FALSE)
+  write.csv(df_weather_data_all, fpath, row.names = FALSE)
 
 }
 
