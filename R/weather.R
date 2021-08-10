@@ -1,27 +1,34 @@
 #install.packages("rdwd")
 #install.packages('bit64')
 #install.packages("sf")
-library(rdwd)
-library(dplyr)
-library(tidyr)
-library(stringr)
+#library(rdwd)
+#library(dplyr)
+#library(tidyr)
+#library(stringr)
 
 
 #install.packages("rgeos", repos="http://R-Forge.R-project.org", type="source")
 #install.packages("rgdal", repos="http://R-Forge.R-project.org", type="source")
-library(devtools)
-#install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-library(sf)
+#library(devtools)
 
-source("R/utils.R")
+
+#install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
+
+
+
+
+#library(sf)
+
+#source("R/utils.R")
 
 download_weather_data <- function() {
-  data("metaIndex")
+  metaIndex <- rdwd:::metaIndex
   metaInd <- metaIndex
   metaInd <- metaInd[metaInd$res=="subdaily" & metaInd$var=="air_temperature" & metaInd$per=="recent" & metaInd$hasfile, ]
   msf <- sf::st_as_sf(metaInd, coords=c("geoLaenge", "geoBreite"), crs=4326)
   federal_states_shp <- raster::getData("GADM", country = "DEU", level = 1)
-  lk <- sf::st_read("R/vg2500_geo84/vg2500_krs.shp", quiet=TRUE)
+  fpath <- system.file("extdata/vg2500_geo84", "vg2500_krs.shp", package="covidproject")
+  lk <- sf::st_read(fpath, quiet=TRUE)
   int <- sf::st_intersects(lk, msf)
   # get station_ids for each district
   df_districts <- data.frame(lk_name=lk$GEN, lk_id=1:402)
@@ -43,7 +50,7 @@ download_weather_data <- function() {
     weather_link <- selectDWD(id=df_all$station_id[[ind]], var="air_temperature", per="recent", res="subdaily")
     weather_file <- suppressMessages(dataDWD(weather_link,
                                              read=FALSE,
-                                             dir="R/weather_data",
+                                             dir="extdata/weather_data",
                                              force=NA,
                                              overwrite=TRUE))
     skip_to_next <- FALSE
@@ -89,7 +96,7 @@ download_weather_data <- function() {
   }
 
   # save data
-  write.csv(df_weather_data_all, "R/weather_data/weather_data_df.csv", row.names = FALSE)
+  write.csv(df_weather_data_all, "extdata/weather_data/weather_data_df.csv", row.names = FALSE)
 
 }
 
@@ -97,9 +104,9 @@ add_weather_data <- function(cov_data) {
   stopifnot("No 'Meldedatum' column provided" = "Meldedatum" %in% colnames(cov_data))
 
   # download weather data, if it does not exist
-  if(!file.exists("R/weather_data/weather_data_df.csv")) download_weather_data()
+  if(!file.exists("extdata/weather_data/weather_data_df.csv")) download_weather_data()
 
-  df_weather_data <- read.csv("R/weather_data/weather_data_df.csv")
+  df_weather_data <- read.csv("extdata/weather_data/weather_data_df.csv")
 
   # if IdLandkreis exists in data add temperatures
   if("IdLandkreis" %in% colnames(cov_data)) {

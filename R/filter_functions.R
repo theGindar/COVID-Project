@@ -1,15 +1,15 @@
 #install.packages("RcppRoll")
-library(tidyverse)
-library(dplyr)
-library(stringr)
-library(lubridate)
-library(RcppRoll)
+#library(tidyverse)
+#library(dplyr)
+#library(stringr)
+#library(lubridate)
+#library(RcppRoll)
 
 #cov_data <- read.csv("R/data.csv")
 
 
 
-source("R/population.R")
+#source("R/population.R")
 
 # filter by date (Meldedatum)
 #
@@ -984,7 +984,7 @@ get_incidence_per_district <- function(data, age_group_start = "A00", age_group_
   stopifnot("No entries found matching the filter" = (0 < nrow(infect_data)))
 
   # add population data
-  population_data <- read.csv("R/population_data/population_data_df.csv")
+  population_data <- read.csv("extdata/population_data/population_data_df.csv")
   infect_data <- left_join(infect_data, population_data, by=c("IdLandkreis" = "LandkreisId"))
 
   infect_data <- ungroup(infect_data)

@@ -125,10 +125,10 @@ plot_Fallsterblichkeit(xt2)
 
 
 
-source("R/filter_functions.R")
-source("R/plot_functions.R")
+#source("R/filter_functions.R")
+#source("R/plot_functions.R")
 
-cov_data <- read.csv("data.csv")
+#cov_data <- read.csv("data.csv")
 
 # --- plot incidence correlation matrix ---
 incidences_df <- get_incidence_per_district(cov_data, 7)

@@ -1,12 +1,12 @@
 #install.packages("prophet")
 #install.packages("forecast")
 #install.packages("slider")
-library(prophet)
-library(lubridate)
-library(forecast)
-library(stringr)
+#library(prophet)
+#library(lubridate)
+#library(forecast)
+#library(stringr)
 
-source("R/filter_functions.R")
+#source("R/filter_functions.R")
 
 #cov_data <- read.csv("R/RKI_COVID19.csv")
 #cov_data %>%

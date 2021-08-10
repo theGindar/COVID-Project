@@ -1,10 +1,10 @@
 #install.packages("httr")
 #install.packages("jsonlite")
 
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(stringr)
+#library(httr)
+#library(jsonlite)
+#library(dplyr)
+#library(stringr)
 
 download_population_data <- function() {
   data = fromJSON("https://services2.arcgis.com/jUpNdisbWqRpMo35/arcgis/rest/services/KRS_ew_2019/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json")
@@ -28,7 +28,7 @@ download_population_data <- function() {
   population_df$LandkreisId <- as.integer(population_df$LandkreisId)
 
   # save data
-  write.csv(population_df, "R/population_data/population_data_df.csv", row.names = FALSE)
+  write.csv(population_df, "extdata/population_data/population_data_df.csv", row.names = FALSE)
   message("Population data successfully downloaded")
 }
 

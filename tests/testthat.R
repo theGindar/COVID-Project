@@ -1,4 +1,4 @@
-library(testthat)
-library(covidproject)
+#library(testthat)
+#library(covidproject)
 
-test_check("covidproject")
+#test_check("covidproject")

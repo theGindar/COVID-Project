@@ -1,6 +1,6 @@
-library(ggplot2)
+#library(ggplot2)
 
-source("R/map.R")
+#source("R/map.R")
 
 plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700, save_in = NA){
   save_plot <- !is.na(save_in)
@@ -473,22 +473,22 @@ plot_district_map <- function(data, save_in = NA, file_name = NA) {
 
 
 
-source("R/filter_functions.R")
-source("R/weather.R")
-cov_data <- read.csv("R/RKI_COVID19.csv")
-dat_1 <- get_infections_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2020/12/01")
-attributes(dat_1)
-dat_2 <- add_weather_data(dat_1)
-dat_1
-plot_function(dat_1, add_weather = TRUE, save_in="R")
-dat_2
-attr(d_p_d, "flag") <- "d_deaths_Landkreis"
-attributes(d_p_d)
+#source("R/filter_functions.R")
+#source("R/weather.R")
+#cov_data <- read.csv("R/RKI_COVID19.csv")
+#dat_1 <- get_infections_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2020/12/01")
+#attributes(dat_1)
+#dat_2 <- add_weather_data(dat_1)
+#dat_1
+#plot_function(dat_1, add_weather = TRUE, save_in="R")
+#dat_2
+#attr(d_p_d, "flag") <- "d_deaths_Landkreis"
+#attributes(d_p_d)
 
 
-write(unique(cov_data$IdLandkreis), file = "R/geo_data/district_ids.txt")
-disids <- scan("R/geo_data/district_ids.txt", integer(), quote = "")
-disids
+#write(unique(cov_data$IdLandkreis), file = "R/geo_data/district_ids.txt")
+#disids <- scan("R/geo_data/district_ids.txt", integer(), quote = "")
+#disids
 
-get_infections_per_district(cov_data, district = "LK Karlsruhe")
+#get_infections_per_district(cov_data, district = "LK Karlsruhe")
 
