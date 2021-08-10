@@ -6,6 +6,11 @@
 #library(dplyr)
 #library(stringr)
 
+
+#' lädt Daten zu Bevölkerungszahlen pro Landkreis herunter, welche zur Berechnung der Inzidenzen benötigt werden
+#'
+#' @return NULL
+#' @export
 download_population_data <- function() {
   data = fromJSON("https://services2.arcgis.com/jUpNdisbWqRpMo35/arcgis/rest/services/KRS_ew_2019/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json")
 
