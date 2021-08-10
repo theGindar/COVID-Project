@@ -25,19 +25,17 @@ library(covidproject)
 Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts heruntergeladen werden:
 
 ```{r load_covid_data}
-# covidproject::Data_Downloader
 
-dir_path <- system.file("extdata/weather_data", package="covidproject")
-data_downloader(dir_path)
+dir_path <- system.file("extdata", package="covidproject")
+
+# aus Performanzgründen laden wir hier direkt die .csv datei
+#data_downloader("path...")
 cov_data <- read.csv(paste0(dir_path, "/data.csv"))
 ```
 
 # Filter functions
 
-Die *filter functions* dienen dazu, die umfangreiche Datentabelle des Robert-Koch-Instituts, welche alle Fälle seit Beginn der Pandemie führt, zu filtern und Daten zu aggregieren. 
-```{r filter_function_setup}
-covidproject::filter_functions
-```
+Die *filter functions* dienen dazu, die umfangreiche Datentabelle des Robert-Koch-Instituts, welche alle Fälle seit Beginn der Pandemie führt, zu filtern 
 
 ## get-Methoden
 
