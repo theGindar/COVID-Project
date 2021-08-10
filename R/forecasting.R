@@ -60,7 +60,7 @@ predict_future_progress <- function(data, future_days = 730) {
   data_df %>%
     ungroup() %>%
     select(date = Meldedatum, y = selected_value) %>%
-    mutate(date = gsub('.{12}$', '', date)) %>%
+    mutate(date = gsub('.{9}$', '', date)) %>%
     mutate(date = ymd(date)) -> data_df
 
   data_df %>%
@@ -69,7 +69,6 @@ predict_future_progress <- function(data, future_days = 730) {
 
   data_df %>%
     mutate(y = slider::slide_dbl(y, mean, .before = 3, .after = 3)) -> data_df
-  print(data_df)
 
   prophet_model <- prophet(data_df, yearly.seasonality = TRUE)
   future <- make_future_dataframe(prophet_model, periods = 730)
