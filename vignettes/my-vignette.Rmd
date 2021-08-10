@@ -25,8 +25,6 @@ library(covidproject)
 Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts heruntergeladen werden:
 
 ```{r load_covid_data}
-# covidproject::Data_Downloader
-
 dir_path <- system.file("extdata/weather_data", package="covidproject")
 data_downloader(dir_path)
 cov_data <- read.csv(paste0(dir_path, "/data.csv"))
@@ -35,9 +33,6 @@ cov_data <- read.csv(paste0(dir_path, "/data.csv"))
 # Filter functions
 
 Die *filter functions* dienen dazu, die umfangreiche Datentabelle des Robert-Koch-Instituts, welche alle Fälle seit Beginn der Pandemie führt, zu filtern und Daten zu aggregieren. 
-```{r filter_function_setup}
-covidproject::filter_functions
-```
 
 ## get-Methoden
 
@@ -107,9 +102,18 @@ predict_future_progress(cov_data, future_days = 50)
 
 ## Erkrankungsdatum
 
+Um zu vergleichen für wie viele Fälle das Erkrankungsdatum bekannt ist, kann man sich mit der Methode *get_infections_overall* die Summe dieser Fälle ausgeben lassen. Hierfür ist in der Datentabelle des Robert-Koch-Instituts eine Zeile verfügbar, die genau diesen Sachverhalt bestimmen lässt. Um die Zahl mit der Gesamtzahl zu vergleichen nutzt man die bereits bekannten *get_infections_...-Methoden
+
 ## Vergleich von Landkreisen
 
+Mit der Methode *get_correlation_for_incidence_pairs* lässt sich die Korrelation der Inzidenzen zwischen zwei Landkreisen berechnen. Man kann schauen wie sehr die einzelnen Inzidenzen von verschiedenen Landkreisen im Zusammenhang stehen.
 
+```{r correlations}
+incidences <- get_incidence_per_district(cov_data)
+correlations <- get_correlation_for_incidence_pairs(incidences)
+plot_incidence_correlations_matrix(correlations)
+plot_incidence_correlations_barchart(correlations)
+```
 
 ## Fallsterblichkeit
 
