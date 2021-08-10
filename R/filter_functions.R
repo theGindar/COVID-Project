@@ -984,7 +984,8 @@ get_incidence_per_district <- function(data, age_group_start = "A00", age_group_
   stopifnot("No entries found matching the filter" = (0 < nrow(infect_data)))
 
   # add population data
-  population_data <- read.csv("extdata/population_data/population_data_df.csv")
+  fpath <- system.file("extdata/population_data", "population_data_df.csv", package="covidproject")
+  population_data <- read.csv(fpath)
   infect_data <- left_join(infect_data, population_data, by=c("IdLandkreis" = "LandkreisId"))
 
   infect_data <- ungroup(infect_data)
