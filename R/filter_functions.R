@@ -198,7 +198,6 @@ get_deaths_per_federal_states <- function(data, age_group_start = NA, age_group_
       summarize(Deaths = sum(AnzahlTodesfall)) -> result
     attr(result, "flag") <- "f_deaths"
   }
-  result <- ungroup(result)
   return(result)
 }
 

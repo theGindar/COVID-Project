@@ -50,7 +50,7 @@ Folgende Eingabeparameter kann der Nutzer variieren:
 
 Mit der Methode *get_deaths_per_federal_state* kann man sich zum Beispiel Todeszahlen zu einzelnen Bundesländern anzeigen lassen.
 ```{r get_deaths_per_federal_state}
-deaths_bayern_hessen <- get_deaths_per_federal_state(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
+deaths_bayern_hessen <- get_deaths_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
 ```
 Hier wird eine Tabelle mit der Anzahl von Todesfällen in Bayern und Hessen im Zeitraum vom 1. Juni 2020 bis 1. Dezember 2020 ausgegeben. Es werden hierbei alle Altersgruppen betrachtet, da diese nicht mittels der Parameter eingeschränkt wurden.
 Weitere Beispiele gibt es mit der Funktion *covidproject::examples*.
@@ -59,7 +59,7 @@ Weitere Beispiele gibt es mit der Funktion *covidproject::examples*.
 
 Mit der Methode *get_incidence_per_district* kann man sich die Inzidenz für bestimmte Landkreise anzeigen lassen. Die Inzidenz gibt an, wie viele Neuinfektionen pro 100.000 Einwohner in einer gewissen Zeitspanne gab. In der Regel liegt diese bei 7 Tagen, man kann sie aber mithilfe vom Parameter *incidence_days* variieren.
 ```{r incidence}
-incidence_flensburg_kiel <- get_incidence_per_district(cov_data, district = c("SK Flensburg", "SK Kiel"))
+incidence_flensburg_kiel <- get_incidence_per_district(cov_data, district = c("SK Flensburg", "SK Kiel"), date_start = "2020/04/01", date_end = "2021/04/01")
 ```
 
 ## Unclean Data
@@ -82,9 +82,6 @@ remove_unclean_data(unclean_data)
 
 Die *plot functions* dienen dazu die neu generierten Datentabellen grafisch darzustellen. Hierbei muss der Nutzer keine weiteren Parameter angeben. Die Funktion findet automatisch zu jeder Tabelle den passenden Plot.
 
-```{r plot_functions}
-covidproject::plotfunctions
-```
 
 Um die Beispieltabelle von oben zu plotten, kann ganz einfach folgender Befehl ausgeführt werden:
 
@@ -109,7 +106,7 @@ Um zu vergleichen für wie viele Fälle das Erkrankungsdatum bekannt ist, kann m
 
 ```{r erkrankungsdatum}
 infections_with_date <- get_infections_overall(cov_data)
-infections_all <- get_infections_per_federal_state(cov_data)
+infections_all <- get_infections_per_federal_states(cov_data)
 ```
 
 ## Vergleich von Landkreisen
@@ -117,7 +114,7 @@ infections_all <- get_infections_per_federal_state(cov_data)
 Mit der Methode *get_correlation_for_incidence_pairs* lässt sich die Korrelation der Inzidenzen zwischen zwei Landkreisen berechnen. Man kann schauen wie sehr die einzelnen Inzidenzen von verschiedenen Landkreisen im Zusammenhang stehen.
 
 ```{r correlations}
-incidences <- get_incidence_per_district(cov_data)
+incidences <- get_incidence_per_district(cov_data, date_start = "2020/04/01", date_end = "2021/04/01")
 correlations <- get_correlation_for_incidence_pairs(incidences)
 plot_incidence_correlations_matrix(correlations)
 plot_incidence_correlations_barchart(correlations)
@@ -137,6 +134,6 @@ plot_function(fallsterblichkeit)
 Oft wird behauptet, die Coronazahlen hängen stark mit dem Wetter zusammen. Es wird davon ausgegangen, das Virus verbreite sich schlechter bei warmem Wetter. Mithilfe des Parameters *add_weather* in der *plot_function* kann ma sich die zugehörige Durchschnittstemperatur für den bestimmten Zeitraum einzeichnen lassen. So kann untersucht werden, ob das Wetter Einfluss auf die Coronazahlen hat.
 
 ```{r weather}
-infections_bayern_hessen <- get_infections_per_federal_state(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
+infections_bayern_hessen <- get_infections_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
 plot_function(infections_bayern_hessen)
 ```
