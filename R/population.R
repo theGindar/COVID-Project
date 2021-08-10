@@ -28,7 +28,8 @@ download_population_data <- function() {
   population_df$LandkreisId <- as.integer(population_df$LandkreisId)
 
   # save data
-  write.csv(population_df, "extdata/population_data/population_data_df.csv", row.names = FALSE)
+  fpath <- system.file("extdata/population_data", "population_data_df.csv", package="covidproject")
+  write.csv(population_df, fpath, row.names = FALSE)
   message("Population data successfully downloaded")
 }
 

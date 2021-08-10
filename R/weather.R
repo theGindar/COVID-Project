@@ -46,11 +46,12 @@ download_weather_data <- function() {
 
     setTxtProgressBar(pb,ind)
     if(is.na(df_all$station_id[[ind]])) next
+    dirpath <- system.file("extdata/weather_data", package="covidproject")
 
     weather_link <- selectDWD(id=df_all$station_id[[ind]], var="air_temperature", per="recent", res="subdaily")
     weather_file <- suppressMessages(dataDWD(weather_link,
                                              read=FALSE,
-                                             dir="extdata/weather_data",
+                                             dir=dirpath,
                                              force=NA,
                                              overwrite=TRUE))
     skip_to_next <- FALSE
@@ -96,6 +97,7 @@ download_weather_data <- function() {
   }
 
   # save data
+  fpath <- system.file("extdata/weather_data", "weather_data_df.csv", package="covidproject")
   write.csv(df_weather_data_all, "extdata/weather_data/weather_data_df.csv", row.names = FALSE)
 
 }
@@ -104,9 +106,10 @@ add_weather_data <- function(cov_data) {
   stopifnot("No 'Meldedatum' column provided" = "Meldedatum" %in% colnames(cov_data))
 
   # download weather data, if it does not exist
-  if(!file.exists("extdata/weather_data/weather_data_df.csv")) download_weather_data()
+  fpath <- system.file("extdata/weather_data", "weather_data_df.csv", package="covidproject")
+  if(!file.exists(fpath)) download_weather_data()
 
-  df_weather_data <- read.csv("extdata/weather_data/weather_data_df.csv")
+  df_weather_data <- read.csv(fpath)
 
   # if IdLandkreis exists in data add temperatures
   if("IdLandkreis" %in% colnames(cov_data)) {
