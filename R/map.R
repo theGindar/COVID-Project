@@ -28,6 +28,17 @@
 # plot_title: title of the diagram
 # legend_title: title of the legend
 #
+
+#' Erzeugt aus data frame einen Plot von Deutschlandkarte mit Landkreisen und Bundesländern
+#'
+#' @param cov_data Ein data frame mit den Spalten "IdLandkreis" und "datapoints". "datapoints" wird dann farblich pro Landkreis dargestellt
+#' @param plot_title Titel des Plots
+#' @param legend_title Titel der Legende
+#' @return Plot objekt mit Deutschlandkarten-Plot
+#'
+#' @examples
+#' plot_map(incidence.df, plot_title = "Beispiel", legend_title = "noch ein Beispiel")
+#' @export
 plot_map <- function(cov_data, plot_title, legend_title){
   suppressWarnings(gpclibPermit())
 

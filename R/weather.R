@@ -21,6 +21,10 @@
 
 #source("R/utils.R")
 
+#' Lädt historische Klimadaten von Deutschem Wetterdienst herunter
+#'
+#' @return NULL
+#' @export
 download_weather_data <- function() {
   metaIndex <- rdwd:::metaIndex
   metaInd <- metaIndex
@@ -100,8 +104,13 @@ download_weather_data <- function() {
   fpath <- system.file("extdata/weather_data", "weather_data_df.csv", package="covidproject")
   write.csv(df_weather_data_all, fpath, row.names = FALSE)
 
+  message("successfully downloaded weather data!")
 }
 
+#' Fügt data frame mit COVID Daten die durchschnittliche Temperatur (für alle verfügbaren Wetterstationen in entsprechendem Landkreis) des Entsprechenden Tages hinzu.
+#' @param cov_data Data frame mit COVID-Daten. Muss Spalte "IdLandkreis", sowie "Meldedatum" enthalten.
+#' @return data frame mit neuer Spalte "Temperatur"
+#' @export
 add_weather_data <- function(cov_data) {
   stopifnot("No 'Meldedatum' column provided" = "Meldedatum" %in% colnames(cov_data))
 

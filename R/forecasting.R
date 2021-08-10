@@ -15,6 +15,16 @@
 #test_data
 
 #attr(test_data, "flag") <- "f_inf"
+
+#' Nutzt Prophet um Vorhersagen zu zukünftigen Entwicklungen (z. B. Infektionen) zu machen
+#'
+#' @param data Data frame mit Daten zu Todesfällen, Infektionsfällen, oder Genesenenfällen
+#' @param future_days Anzahl Tage, die in die Zukunft vorhergesagt werden soll
+#' @return NULL, bzw. Plot mit Vorhersage
+#'
+#' @examples
+#' predict_future_progress(df)
+#' @export
 predict_future_progress <- function(data, future_days = 730) {
 
   selected_value <- c()

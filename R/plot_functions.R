@@ -2,6 +2,17 @@
 
 #source("R/map.R")
 
+#' Erzeugt, bzw. Speichert Plot aus data frame. Kann als Barchart dargestellt werden, oder als Linien (für Zeitreihen)
+#'
+#' @param data Data frame mit Daten aus get_... Methoden. Sollte ein beschreibendes "flag" als Attribut enthalten.
+#' @param add_weather Boolean. Gibt an, ob zusätzlich bei einer Zeitreihe die Durschnittstemperatur des entsprechenden Datums geplottet werden soll.
+#' @param scaling_coeff Zahl, um die Skalierung der beiden Achsen bei Wetter-Plots anzupassen.
+#' @param save_in Pfad zu Verzeichnis, in welchem der Plot gespeichert werden soll. Wenn save_in NA ist, wird der Plot direkt angezeigt
+#' @return NULL, bzw. Plot
+#'
+#' @examples
+#' plot_function(df, add_weather=TRUE, save_in="some/path")
+#' @export
 plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700, save_in = NA){
   save_plot <- !is.na(save_in)
   print(save_plot)
@@ -371,6 +382,17 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700, save_in 
          "d_rec_Landkreis-Age-Datum" = "Datum Alter Landkreis")
 }
 
+#' Erzeugt, bzw. Speichert Correlationsmatrix-Plot aus data frame.
+#'
+#' @param correlations_data Data frame mit Daten zu Inzidenz-Correlations-Paaren von Landkreisen.
+#' @param districts Vektor aus Strings mit Landkreisnamen, die in der Matrix dargestellt werden sollen (zur Übersichtlichkeit).
+#' @param save_in Pfad zu Verzeichnis, in welchem der Plot gespeichert werden soll. Wenn save_in NA ist, wird der Plot direkt angezeigt
+#' @param file_name Name der zu speichernden Bilddatei
+#' @return NULL, bzw. Plot
+#'
+#' @examples
+#' plot_incidence_correlations_matrix(df, districts = c("LK Kiel", "LK Karlsruhe", "SK Karlsruhe"), save_in = "some/path", file_name = "correlation_matrix_plot")
+#' @export
 plot_incidence_correlations_matrix <- function(correlations_data, districts = NA, save_in = NA, file_name = NA) {
   save_plot <- !is.na(save_in) & !is.na(file_name)
 
@@ -412,7 +434,17 @@ plot_incidence_correlations_matrix <- function(correlations_data, districts = NA
   else cov_plot
 }
 
-
+#' Erzeugt, bzw. Speichert Barchart von höchsten Inzidenz-Correlations-Paaren aus data frame.
+#'
+#' @param correlations_data Data frame mit Daten zu Inzidenz-Correlations-Paaren von Landkreisen.
+#' @param top Anzahl der Paare, die betrachtet werden sollen. "top = 10" bedeutet die 10 Landkreispaare mit der höchsten Correlation zwischen Inzidenzen
+#' @param save_in Pfad zu Verzeichnis, in welchem der Plot gespeichert werden soll. Wenn save_in NA ist, wird der Plot direkt angezeigt
+#' @param file_name Name der zu speichernden Bilddatei
+#' @return NULL, bzw. Plot
+#'
+#' @examples
+#' plot_incidence_correlationsbarchart(df, top = 10, save_in = "some/path", file_name = "correlation_matrix_plot")
+#' @export
 plot_incidence_correlations_barchart <- function(correlations_data, top = 10, save_in = NA, file_name = NA) {
   save_plot <- !is.na(save_in) & !is.na(file_name)
 

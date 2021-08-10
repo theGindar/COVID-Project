@@ -4,7 +4,10 @@ moving_average <- function(x, n) {
   return(stats::filter(x, rep(1 / n, n), sides = 2))
 }
 
-
+#' Gibt zurück, in welchem Bundesland sich ein Landkreis befindet.
+#'
+#' @param district_id IdLandkreis (Amtlicher Gemeindeschlüssel, AGS) des Landkreises
+#' @return Bundeslandname
 get_federal_state_by_district_id <- function(district_id) {
   federal_state_numbers <- list(
     "Schleswig-Holstein" = 1,
