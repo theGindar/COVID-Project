@@ -113,12 +113,22 @@ download_weather_data <- function() {
 #' @export
 add_weather_data <- function(cov_data) {
   stopifnot("No 'Meldedatum' column provided" = "Meldedatum" %in% colnames(cov_data))
-
+  df_flag <- attr(cov_data, "flag")
   # download weather data, if it does not exist
   fpath <- system.file("extdata/weather_data", "weather_data_df.csv", package="covidproject")
   if(!file.exists(fpath)) download_weather_data()
 
   df_weather_data <- read.csv(fpath)
+
+  # if cov_data has wrong date format remove ending zeros
+  remove_zeros <- function(x) {
+    if(str_detect(x, "\\+00$")) x <- gsub('.{3}$', '', x)
+    return(x)
+  }
+
+  df_weather_data$Meldedatum <- sapply(df_weather_data$Meldedatum, remove_zeros)
+  cov_data$Meldedatum <- sapply(cov_data$Meldedatum, remove_zeros)
+
 
   # if IdLandkreis exists in data add temperatures
   if("IdLandkreis" %in% colnames(cov_data)) {
@@ -127,9 +137,13 @@ add_weather_data <- function(cov_data) {
   } else if("Bundesland" %in% colnames(cov_data)) {
     # if only Bundesland is provided
     federal_states_provided <- distinct(cov_data, Bundesland)$Bundesland
+
     df_weather_data %>%
-      drop_na(Temperatur) %>%
-      mutate(Bundesland = get_federal_state_by_district_id(Bundesland)) %>%
+      drop_na(Temperatur) -> df_weather_data
+
+    df_weather_data$Bundesland <- sapply(df_weather_data$LandkreisId, get_federal_state_by_district_id)
+
+    df_weather_data %>%
       group_by(Meldedatum, Bundesland) %>%
       summarise(Temperatur = mean(Temperatur)) -> df_weather_data
 
@@ -144,7 +158,7 @@ add_weather_data <- function(cov_data) {
       summarise(Temperatur = mean(Temperatur)) -> df_weather_data
     cov_data <- left_join(cov_data, df_weather_data, by = c("Meldedatum" = "Meldedatum"))
   }
-  cov_data <- ungroup(cov_data)
+  attr(cov_data, "flag") <- df_flag
   return(cov_data)
 }
 

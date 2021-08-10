@@ -488,8 +488,6 @@ get_infections_per_district <- function(data, age_group_start = NA, age_group_en
       summarize(Infections = sum(AnzahlFall)) -> result
     attr(result, "flag") <- "d_inf_Age"
   }else if(is.na(district) & !is.na(age_group_start) & !is.na(age_group_end) & is.na(date_start) & is.na(date_end)){
-    print("Age 2")
-    print(age_group_start)
     data %>%
       filter(NeuerFall %in% c(0,1)) %>%
       group_by(IdLandkreis, Landkreis) %>%
