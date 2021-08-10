@@ -25,8 +25,8 @@ library(covidproject)
 Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts heruntergeladen werden:
 
 ```{r load_covid_data}
-covidproject::Data_Downloader
-data_downloader()
+# covidproject::Data_Downloader
+covidproject:::data_downloader()
 cov_data <- read.csv("R/data.csv")
 ```
 
