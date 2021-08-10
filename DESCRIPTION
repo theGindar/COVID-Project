@@ -1,11 +1,10 @@
 Package: covidproject
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Analysis of COVID Data for Germany
 Version: 0.1.0
-Author: Who wrote it
+Author: Patrick Günther, Feisal Ahmad, David Scheid
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package gives tools to download, analyse and visualize data of the COVID19 virus for Germany.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

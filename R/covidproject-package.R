@@ -1,3 +1,6 @@
+#' @details doku und so
+#' @section tolle section
+#'
 #' @keywords internal
 "_PACKAGE"
 

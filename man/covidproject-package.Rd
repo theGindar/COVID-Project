@@ -4,9 +4,15 @@
 \name{covidproject-package}
 \alias{covidproject}
 \alias{covidproject-package}
-\title{covidproject: What the Package Does (Title Case)}
+\title{covidproject: Analysis on COVID Data for Germany}
 \description{
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Analysis on COVID Data for Germany
 }
+\details{
+doku und so
+}
+\section{tolle section}{
+NA
+}
+
 \keyword{internal}
