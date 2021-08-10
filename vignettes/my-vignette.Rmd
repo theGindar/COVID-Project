@@ -24,7 +24,7 @@ library(covidproject)
 ```
 Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts heruntergeladen werden:
 
-```{load_covid_data}
+```{r load_covid_data}
 covidproject::Data_Downloader
 data_downloader()
 cov_data <- read.csv("R/data.csv")
@@ -33,7 +33,7 @@ cov_data <- read.csv("R/data.csv")
 # Filter functions
 
 Die *filter functions* dienen dazu, die umfangreiche Datentabelle des Robert-Koch-Instituts, welche alle Fälle seit Beginn der Pandemie führt, zu filtern und Daten zu aggregieren. 
-```{filter_function_setup}
+```{r filter_function_setup}
 covidproject::filter_functions
 ```
 
@@ -49,7 +49,7 @@ Folgende Eingabeparameter kann der Nutzer variieren:
 + *federal_state* oder *district*: Je nach Methode, welche Bundesländer bzw. Landkreise will man sehen
 
 Mit der Methode *get_deaths_per_federal_state* kann man sich zum Beispiel Todeszahlen zu einzelnen Bundesländern anzeigen lassen.
-```{get_deaths_per_federal_state}
+```{r get_deaths_per_federal_state}
 deaths_bayern_hessen <- get_deaths_per_federal_state(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
 ```
 Hier wird eine Tabelle mit der Anzahl von Todesfällen in Bayern und Hessen im Zeitraum vom 1. Juni 2020 bis 1. Dezember 2020 ausgegeben. Es werden hierbei alle Altersgruppen betrachtet, da diese nicht mittels der Parameter eingeschränkt wurden.
@@ -58,7 +58,7 @@ Weitere Beispiele gibt es mit der Funktion *covidproject::examples*.
 ## Inzidenz
 
 Mit der Methode *get_incidence_per_district* kann man sich die Inzidenz für bestimmte Landkreise anzeigen lassen. Die Inzidenz gibt an, wie viele Neuinfektionen pro 100.000 Einwohner in einer gewissen Zeitspanne gab. In der Regel liegt diese bei 7 Tagen, man kann sie aber mithilfe vom Parameter *incidence_days* variieren.
-```{incidence}
+```{r incidence}
 incidence_flensburg_kiel <- get_incidence_per_district(cov_data, district = c("SK Flensburg", "SK Kiel"))
 ```
 
@@ -72,7 +72,7 @@ Hierzu zählen:
 + Der Fall ist jetzt nicht mehr genesen, obwohl er es in vorigen Publikationen war
 + Die Altersgruppe des Falls ist unbekannt
 
-```{unclean_data}
+```{r unclean_data}
 unclean_data <- get_unclean_data(cov_data)
 remove_unclean_data(unclean_data)
 ```
@@ -82,13 +82,13 @@ remove_unclean_data(unclean_data)
 
 Die *plot functions* dienen dazu die neu generierten Datentabellen grafisch darzustellen. Hierbei muss der Nutzer keine weiteren Parameter angeben. Die Funktion findet automatisch zu jeder Tabelle den passenden Plot.
 
-```{plot_functions}
+```{r plot_functions}
 covidproject::plotfunctions
 ```
 
 Um die Beispieltabelle von oben zu plotten, kann ganz einfach folgender Befehl ausgeführt werden:
 
-```{plot_deaths}
+```{r plot_deaths}
 plot_function(deaths_bayern_hessen)
 ```
 
@@ -96,7 +96,7 @@ plot_function(deaths_bayern_hessen)
 
 Mit der Funktion *predict_future_progress* wird versucht eine zukünftige Prognose für Coronazahlen zu geben. Mithilfe einer Zeitreihe aus den Daten und einem Prophet-Model, werden Daten prognostiziert. Mit dem Parameter *future_days* lässt sich angeben, wie viele Tage man in die Zukunft sehen möchte.
 
-```{predict_future_progress}
+```{r predict_future_progress}
 covidproject::forecasting
 predict_future_progress(cov_data, future_days = 50)
 ```
@@ -113,7 +113,7 @@ predict_future_progress(cov_data, future_days = 50)
 
 Die Fallsterblichkeit gibt den Anteil an Todesfällen pro entdecktem Infektionsfall an. An der Fallsterblichkeit lässt sich erkennen wie todesgefährlich eine Krankheit ist. Mit der Funktion *get_fallsterblichkeit_overall* lässt sich ein Dataframe erstellen, welches den Verlauf der Fallsterblichkeit über den gesamten Coronazeitraum darstellt. Hierbei ist es möglich mithilfe von Parametern die Altersgruppen einzuschränken.
 
-```{fallsterblichkeit}
+```{r fallsterblichkeit}
 fallsterblichkeit <- get_fallsterblichkeit_overall(cov_data)
 plot_function(fallsterblichkeit)
 ```
@@ -122,7 +122,7 @@ plot_function(fallsterblichkeit)
 
 Oft wird behauptet, die Coronazahlen hängen stark mit dem Wetter zusammen. Es wird davon ausgegangen, das Virus verbreite sich schlechter bei warmem Wetter. Mithilfe des Parameters *add_weather* in der *plot_function* kann ma sich die zugehörige Durchschnittstemperatur für den bestimmten Zeitraum einzeichnen lassen. So kann untersucht werden, ob das Wetter Einfluss auf die Coronazahlen hat.
 
-```{weather}
+```{r weather}
 infections_bayern_hessen <- get_infections_per_federal_state(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
 plot_function(infections_bayern_hessen)
 ```
