@@ -754,7 +754,7 @@ get_recovered_per_district <- function(data, age_group_start = NA, age_group_end
 #' @export
 get_infections_overall <- function(data, age_group_start = NA, age_group_end = NA, date_start = NA, date_end = NA){
 
-  if(is.na(district) & is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
+  if(is.na(age_group_start) & is.na(age_group_end) & !is.na(date_start) & !is.na(date_end)){
     print("Datum")
     data %>%
       filter(IstErkrankungsbeginn == "1") %>%

@@ -95,13 +95,13 @@ plot_function(deaths_bayern_hessen)
 Mit der Funktion *predict_future_progress* wird versucht eine zukünftige Prognose für Coronazahlen zu geben. Mithilfe einer Zeitreihe aus den Daten und einem Prophet-Model, werden Daten prognostiziert. Mit dem Parameter *future_days* lässt sich angeben, wie viele Tage man in die Zukunft sehen möchte. Im folgenden Beispiel wird die Zukünftige Entwicklung der täglichen Infektionszahlen, bzw. Todesfälle für ganz Deutschland für die nächsten zwei Jahre vorhergesagt:
 
 ```{r predict_future_progress Todesfälle}
-infection_data <- get_deaths_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2021/08/09")
+infection_data <- get_deaths_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2021/08/07")
 predict_future_progress(infection_data, future_days = 370)
 
 
 ```
 ```{r predict_future_progress Infektionen}
-infection_data <- get_infections_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2021/08/09")
+infection_data <- get_infections_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2021/08/07")
 predict_future_progress(infection_data, future_days = 370)
 ```
 

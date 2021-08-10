@@ -177,7 +177,7 @@ plot_function <- function(data, add_weather=FALSE, scaling_coeff = 700, save_in 
          "f_inf_Bundesland-Datum" = {
            cov_plot <- ggplot(data) + geom_line(aes(x = as.Date(Meldedatum), y = y_val, group = Bundesland, color = Bundesland)) +
            xlab("Meldedatum") +
-           stat_smooth(method = "loess", se = FALSE)
+           stat_smooth(aes(x = as.Date(Meldedatum), y = y_val, group = Bundesland, color = Bundesland), method = "loess", se = FALSE)
 
            if(add_weather) {
              cov_plot <- add_weather_line(cov_plot, axis_1 = "Infizierte")
