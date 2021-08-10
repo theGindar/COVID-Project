@@ -26,7 +26,7 @@ Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts herunterg
 
 ```{r load_covid_data}
 dir_path <- system.file("extdata/weather_data", package="covidproject")
-data_downloader(dir_path)
+covidproject:::data_downloader(dir_path)
 cov_data <- read.csv(paste0(dir_path, "/data.csv"))
 ```
 
@@ -102,7 +102,12 @@ predict_future_progress(cov_data, future_days = 50)
 
 ## Erkrankungsdatum
 
-Um zu vergleichen für wie viele Fälle das Erkrankungsdatum bekannt ist, kann man sich mit der Methode *get_infections_overall* die Summe dieser Fälle ausgeben lassen. Hierfür ist in der Datentabelle des Robert-Koch-Instituts eine Zeile verfügbar, die genau diesen Sachverhalt bestimmen lässt. Um die Zahl mit der Gesamtzahl zu vergleichen nutzt man die bereits bekannten *get_infections_...-Methoden
+Um zu vergleichen für wie viele Fälle das Erkrankungsdatum bekannt ist, kann man sich mit der Methode *get_infections_overall* die Summe dieser Fälle ausgeben lassen. Hierfür ist in der Datentabelle des Robert-Koch-Instituts eine Zeile verfügbar, die genau diesen Sachverhalt bestimmen lässt. Um die Zahl mit der Gesamtzahl zu vergleichen nutzt man die bereits bekannten *get_infections_...-Methoden*, um das zugehörige Dataframe zu erzeugen.
+
+```{r erkrankungsdatum}
+infections_with_date <- get_infections_overall(cov_data)
+infections_all <- get_infections_per_federal_state(cov_data)
+```
 
 ## Vergleich von Landkreisen
 
