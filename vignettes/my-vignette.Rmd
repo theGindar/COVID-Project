@@ -142,5 +142,5 @@ Oft wird behauptet, die Coronazahlen hängen stark mit dem Wetter zusammen. Es w
 
 ```{r weather}
 infections_bayern_hessen <- get_infections_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
-plot_function(infections_bayern_hessen)
+plot_function(infections_bayern_hessen, add_weather = TRUE)
 ```
