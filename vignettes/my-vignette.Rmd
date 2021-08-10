@@ -26,8 +26,10 @@ Zudem muss zu Beginn einmal die Datentabelle des Robert-Koch-Instituts herunterg
 
 ```{r load_covid_data}
 # covidproject::Data_Downloader
-covidproject:::data_downloader()
-cov_data <- read.csv("R/data.csv")
+
+dir_path <- system.file("extdata/weather_data", package="covidproject")
+data_downloader(dir_path)
+cov_data <- read.csv(paste0(dir_path, "/data.csv"))
 ```
 
 # Filter functions
