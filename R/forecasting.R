@@ -71,7 +71,7 @@ predict_future_progress <- function(data, future_days = 730) {
     mutate(y = slider::slide_dbl(y, mean, .before = 3, .after = 3)) -> data_df
 
   prophet_model <- prophet(data_df, yearly.seasonality = TRUE)
-  future <- make_future_dataframe(prophet_model, periods = 730)
+  future <- make_future_dataframe(prophet_model, periods = future_days)
   forecast <- predict(prophet_model, future)
 
   title_text <- paste("Forecast of", selected_value)

@@ -38,6 +38,7 @@ dir_path <- system.file("extdata", package="covidproject")
 #data_downloader("path...")
 cov_data <- read.csv(paste0(dir_path, "/data.csv"))
 
+print(cov_data)
 ```
 
 # Filter functions
@@ -58,6 +59,8 @@ Mit der Methode *get_deaths_per_federal_state* kann man sich zum Beispiel Todesz
 
 ```{r get_deaths_per_federal_state}
 deaths_bayern_hessen <- get_deaths_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2020/12/01", federal_state = c("Bayern", "Hessen"))
+
+print(deaths_bayern_hessen)
 ```
 
 Hier wird eine Tabelle mit der Anzahl von Todesfällen in Bayern und Hessen im Zeitraum vom 1. Juni 2020 bis 1. Dezember 2020 ausgegeben. Es werden hierbei alle Altersgruppen betrachtet, da diese nicht mittels der Parameter eingeschränkt wurden. Weitere Beispiele gibt es mit der Funktion *covidproject::examples*.
@@ -68,6 +71,8 @@ Mit der Methode *get_incidence_per_district* kann man sich die Inzidenz für bes
 
 ```{r incidence}
 incidence_flensburg_kiel <- get_incidence_per_district(cov_data, district = c("SK Flensburg", "SK Kiel"), date_start = "2020/04/01", date_end = "2021/04/01")
+
+print(incidence_flensburg_kiel)
 ```
 
 ## Unclean Data
@@ -97,20 +102,31 @@ plot_function(deaths_bayern_hessen)
 
 # Fragestellungen
 
+## Fallsterblichkeit
+
+Die Fallsterblichkeit gibt den Anteil an Todesfällen pro entdecktem Infektionsfall an. An der Fallsterblichkeit lässt sich erkennen wie todesgefährlich eine Krankheit ist. Mit der Funktion *get_fallsterblichkeit_overall* lässt sich ein Dataframe erstellen, welches den Verlauf der Fallsterblichkeit über den gesamten Coronazeitraum darstellt. Hierbei ist es möglich mithilfe von Parametern die Altersgruppen einzuschränken.
+
+```{r fallsterblichkeit}
+fallsterblichkeit <- get_fallsterblichkeit_overall(cov_data)
+plot_function(fallsterblichkeit)
+```
+
+Die Fallsterblichkeit weist einen starken Spike zu Anfang des Jahres 2020 auf, bleibt danach jedoch niedrig. Es ist eine Saisonalität zu erkennen (niedrigere Fallsterblichkeit im Sommer).
+
 ## Forecasting
 
 Mit der Funktion *predict_future_progress* wird versucht eine zukünftige Prognose für Coronazahlen zu geben. Mithilfe einer Zeitreihe aus den Daten und einem Prophet-Model, werden Daten prognostiziert. Mit dem Parameter *future_days* lässt sich angeben, wie viele Tage man in die Zukunft sehen möchte. Im folgenden Beispiel wird die Zukünftige Entwicklung der täglichen Infektionszahlen, bzw. Todesfälle für ganz Deutschland für die nächsten zwei Jahre vorhergesagt:
 
 ```{r predict_future_progress Todesfälle}
 infection_data <- get_deaths_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2021/08/07")
-predict_future_progress(infection_data, future_days = 370)
+predict_future_progress(infection_data, future_days = 730)
 
 
 ```
 
 ```{r predict_future_progress Infektionen}
 infection_data <- get_infections_per_federal_states(cov_data, date_start = "2020/06/01", date_end = "2021/08/07")
-predict_future_progress(infection_data, future_days = 370)
+predict_future_progress(infection_data, future_days = 730)
 ```
 
 Es ist erkennbar, dass das Model leicht sinkende Todesfälle vorhersagt. Interessanterweise ist dies für Infektionen nicht der Fall. Hier werden steigende Zahlen über die Jahre vorhergesehen. Es ist anzumerken, dass die Vorhersagen nur auf den historischen Fallzahlen und der Annahme, dass jährliche Saisonalität bei den Verläufen vorliegt, basieren.
@@ -178,17 +194,6 @@ plot_incidence_correlations_matrix(correlations, districts=c("SK Bochum",
 ```
 
 Es zeigt sich, dass Landkreise mit sehr hoher Korrelation der Inzidenzen auch geographisch nahe zueinander liegen. Außerdem weisen die Top-7 Landkreispaare mit den stärksten Korrelationen hohe Korrelationen untereinander auf.
-
-## Fallsterblichkeit
-
-Die Fallsterblichkeit gibt den Anteil an Todesfällen pro entdecktem Infektionsfall an. An der Fallsterblichkeit lässt sich erkennen wie todesgefährlich eine Krankheit ist. Mit der Funktion *get_fallsterblichkeit_overall* lässt sich ein Dataframe erstellen, welches den Verlauf der Fallsterblichkeit über den gesamten Coronazeitraum darstellt. Hierbei ist es möglich mithilfe von Parametern die Altersgruppen einzuschränken.
-
-```{r fallsterblichkeit}
-fallsterblichkeit <- get_fallsterblichkeit_overall(cov_data)
-plot_function(fallsterblichkeit)
-```
-
-Die Fallsterblichkeit weist einen starken Spike zu Anfang des Jahres 2020 auf, bleibt danach jedoch niedrig. Es ist eine Saisonalität zu erkennen (niedrigere Fallsterblichkeit im Sommer).
 
 ## Wetter
 
