@@ -1,3 +1,4 @@
+# Deprecated
 # x: input data as list
 # n: moving average window size
 moving_average <- function(x, n) {

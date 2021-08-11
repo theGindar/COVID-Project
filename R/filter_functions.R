@@ -1,16 +1,3 @@
-#install.packages("RcppRoll")
-#library(tidyverse)
-#library(dplyr)
-#library(stringr)
-#library(lubridate)
-#library(RcppRoll)
-
-#cov_data <- read.csv("R/data.csv")
-
-
-
-#source("R/population.R")
-
 # filter by date (Meldedatum)
 #
 # data: df with covid data

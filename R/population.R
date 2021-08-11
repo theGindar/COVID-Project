@@ -1,12 +1,3 @@
-#install.packages("httr")
-#install.packages("jsonlite")
-
-#library(httr)
-#library(jsonlite)
-#library(dplyr)
-#library(stringr)
-
-
 #' lädt Daten zu Bevölkerungszahlen pro Landkreis herunter, welche zur Berechnung der Inzidenzen benötigt werden
 #'
 #' @return NULL
@@ -37,13 +28,4 @@ download_population_data <- function() {
   write.csv(population_df, fpath, row.names = FALSE)
   message("Population data successfully downloaded")
 }
-
-#download_population_data()
-
-
-#cov_data <- left_join(cov_data, population_df, by=c("IdLandkreis" = "LandkreisId"))
-#cov_data %>%
-#  select(Population) %>%
-#  distinct(Population)
-#cov_data
 

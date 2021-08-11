@@ -1,27 +1,3 @@
-#library(maptools)
-#library(ggplot2)
-#library(sp)
-#library(rgdal)
-#library(knitr)
-#library(dplyr)
-#library(rmarkdown)
-#library(scales)
-#library(maptools)
-#library(ggmap)
-#library(stringr)
-
-#shapes <- readOGR("R/vg2500_bld.shp") # https://hub.arcgis.com/datasets/ae25571c60d94ce5b7fcbf74e27c00e0/about
-
-
-#read.csv("R/data.csv")
-
-# install.packages("raster")
-# install.packages("mapproj")
-# install.packages("ggmap")
-
-
-
-
 # returns plot of map of german districts
 #
 # cov_data: a dataframe with columns "IdLandkreis" and "datapoints" (data that should be plotted for each district)
@@ -93,15 +69,4 @@ plot_map <- function(cov_data, plot_title, legend_title){
   }
   return(single_map(merged_shp, districts_shp_f))
 }
-
-### Sample Code
-# cov_data_1 <- read.csv("R/RKI_COVID19.csv")
-# cov_data_1 %>%
-#   group_by(IdLandkreis) %>%
-#   summarize(datapoints=sum(AnzahlTodesfall)) -> cov_data_1
-# cov_data_1
-
-
-#names(cov_data)[names(cov_data) == 'deaths'] <- 'datapoints'
-# plot_map(cov_data_1, "krasser title", "krasse legende")
 

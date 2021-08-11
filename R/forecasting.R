@@ -1,21 +1,3 @@
-#install.packages("prophet")
-#install.packages("forecast")
-#install.packages("slider")
-#library(prophet)
-#library(lubridate)
-#library(forecast)
-#library(stringr)
-
-#source("R/filter_functions.R")
-
-#cov_data <- read.csv("R/RKI_COVID19.csv")
-#cov_data %>%
-#  arrange(desc(Meldedatum))
-#test_data <- get_infections_per_federal_states(cov_data, date_start = "2020/01/01", date_end = "2021/06/01")
-#test_data
-
-#attr(test_data, "flag") <- "f_inf"
-
 #' Nutzt Prophet um Vorhersagen zu zukünftigen Entwicklungen (z. B. Infektionen) zu machen
 #'
 #' @param data Data frame mit Daten zu Todesfällen, Infektionsfällen, oder Genesenenfällen

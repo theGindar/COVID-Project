@@ -1,26 +1,3 @@
-#install.packages("rdwd")
-#install.packages('bit64')
-#install.packages("sf")
-#library(rdwd)
-#library(dplyr)
-#library(tidyr)
-#library(stringr)
-
-
-#install.packages("rgeos", repos="http://R-Forge.R-project.org", type="source")
-#install.packages("rgdal", repos="http://R-Forge.R-project.org", type="source")
-#library(devtools)
-
-
-#install_github("r-spatial/sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-
-
-
-
-#library(sf)
-
-#source("R/utils.R")
-
 #' Lädt historische Klimadaten von Deutschem Wetterdienst herunter
 #'
 #' @return NULL
@@ -162,7 +139,4 @@ add_weather_data <- function(cov_data) {
   return(cov_data)
 }
 
-#cov_data <- read.csv("R/RKI_COVID19.csv")
-#download_weather_data()
-#cov_data_with_weather <- add_weather_data(cov_data)
 
